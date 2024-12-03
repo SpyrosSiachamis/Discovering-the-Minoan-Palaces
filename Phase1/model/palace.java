@@ -40,7 +40,9 @@ public class palace {
             totalCards++;
         }
 
-        System.out.println(totalCards);
+        System.out.println("Cards of " + name +": "+ totalCards);
+        System.out.println("Number Cards of " + name +": "+ numCards.size());
+        System.out.println("Special Cards of " + name +": "+ spCards.size());
     }
 
     /**
@@ -65,5 +67,9 @@ public class palace {
      */
     public Path getPath() {
         return path;
+    }
+
+    public String getName(){
+        return name;
     }
 }

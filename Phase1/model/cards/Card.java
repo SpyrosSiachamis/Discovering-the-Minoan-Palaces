@@ -1,9 +1,11 @@
 package Phase1.model.cards;
 import javax.swing.*;
+import java.awt.event.MouseListener;
 
 public abstract class Card {
     private ImageIcon minImage;
     private String Palace;
+    private MouseListener mouseListener;
     /**
      * <b>Constructor</b>: Initializes a Card Object
      * Class is an abstract class. Can only be used to create subclasses using super
@@ -13,6 +15,7 @@ public abstract class Card {
     public Card(ImageIcon minImage, String palace) {
         this.minImage = minImage;
         this.Palace = palace;
+
     }
 
     /**
@@ -45,5 +48,23 @@ public abstract class Card {
      */
     public void setPalace(String palace) {
         Palace = palace;
+    }
+
+    /**
+     * Returns the action listener.
+     *
+     * @return
+     */
+    public MouseListener getMouseListener() {
+        return mouseListener;
+    }
+
+    /**
+     * Sets the action listener.
+     *
+     * @param mouseListener
+     */
+    public void setMouseListener(MouseListener mouseListener) {
+        this.mouseListener = mouseListener;
     }
 }

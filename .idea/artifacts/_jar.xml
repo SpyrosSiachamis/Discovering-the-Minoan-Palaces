@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ΑναζητώνταςΤαΜινωικάΑνάκτωρα:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/_jar</output-path>
+    <root id="archive" name="Project252_2024.jar">
+      <element id="module-output" name="Project252_2024" />
+    </root>
+  </artifact>
+</component>

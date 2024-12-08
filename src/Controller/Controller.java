@@ -1,0 +1,592 @@
+package src.Controller;
+
+import src.model.Player;
+import src.model.cards.Card;
+import src.model.findings.Finding;
+import src.model.pawns.Pawn;
+import src.model.positions.FindingPosition;
+import src.model.positions.Path;
+import src.model.positions.Position;
+import src.Board;
+import src.model.palace;
+
+import javax.sound.sampled.*;
+import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * The src.Controller class manages the overall game logic, including player
+ * initialization,
+ * turn management, music playback, and victory conditions.
+ */
+public class Controller {
+    /*
+     * Game variables
+     */
+    Player player1;
+    Player player2;
+    palace knossos;
+    palace malia;
+    palace zakros;
+    palace phaistos;
+    private Stack<Card> cardStack = new Stack<>();
+    private ArrayList<Finding> rareFindings = new ArrayList<>();
+
+    private File Music;
+    private Clip clip;
+    private boolean isPlaying = true;
+    Board board;
+    int player = 0;
+
+    /**
+     * Constructs a src.Controller instance and initializes the game state.
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: Players are initialized, and a starting player is selected.
+     * <p>
+     * Invariant: There are always two players in the game.
+     */
+    public Controller() {
+        InitializePlayers();
+        startingPlayer();
+    }
+    /**
+     * Initializes the palaces with their respective names and paths.
+     * This method sets up four palaces: Knossos, Malia, Zakros, and Phaistos.
+     * Each palace is created with a name and a corresponding Path object.
+     *<p>
+     * <b>Pre-condition</b>: The necessary resources and environment for creating
+     * Palace and Path objects must be available. No existing palaces should be
+     * initialized to avoid overwriting.
+     *<p>
+     * <b>Post-condition</b>: Four Palace objects with the names Knossos, Malia,
+     * Zakros, and Phaistos are initialized and associated with their respective
+     * Path objects.
+     *<p>
+     * <b>Invariant</b>: The method maintains the integrity of the palace setup
+     * by ensuring each Palace has a unique name and path. The method assumes a
+     * state of uninitialized palaces before invocation.
+     */
+    public void initializePalaces(){
+        knossos = new palace("knossos", new Path("knossos"));
+        malia = new palace("malia", new Path("malia"));
+        zakros = new palace("zakros", new Path("zakros"));
+        phaistos = new palace("phaistos", new Path("phaistos"));
+        setCardListeners(knossos);
+        setCardListeners(malia);
+        setCardListeners(zakros);
+        setCardListeners(phaistos);
+        initializeCards();
+
+        rareFindings.add(new Finding(30,new ImageIcon("src/assets/images/findings/diskos.jpg"),"diskos"));
+        rareFindings.add(new Finding(25,new ImageIcon("src/assets/images/findings/kosmima.jpg"),"kosmima"));
+        rareFindings.add(new Finding(25,new ImageIcon("src/assets/images/findings/ring.jpg"),"ring"));
+        rareFindings.add(new Finding(25,new ImageIcon("src/assets/images/findings/ruto.jpg"),"ruto"));
+
+        Random rand = new Random();
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) phaistos.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) knossos.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) malia.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) zakros.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        for (int i=0;i<9;i++){
+            if (knossos.getPath().getPositions().get(i) instanceof FindingPosition) {
+                System.out.println(((FindingPosition) knossos.getPath().getPositions().get(i)).getFind());
+            }
+        }
+        System.out.println("Total cards in stack: " + cardStack.size());
+    }
+
+    /**
+     * Initializes the players for the game.
+     *<p>
+     * <b>Pre-condition</b>: None.
+     * <p>
+     * <b>Post-condition</b>: player1 and player2 are assigned new Player instances.
+     * <p>
+     * <b>Invariant</b>: Each player has their respective music file assigned.
+     */
+    private void InitializePlayers() {
+        player1 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
+                new File("src/assets/music/Player1.wav"), "Player 1");
+        player2 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
+                new File("src/assets/music/Player2.wav"), "Player 2");
+    }
+
+    /**
+     * Randomly selects the starting player and sets their music file.
+     *<p>
+     * <b>Pre-condition</b>: player1 and player2 must be initialized.
+     * <p>
+     * <b>Post-condition</b>: currentPlayer is set to either player1 or player2, and
+     * their corresponding music file is assigned to Music.
+     * <p>
+     * <b>Invariant</b>: The starting player is always one of the two players.
+     */
+    private void startingPlayer() {
+        Random rand = new Random();
+        int turn;
+        turn = rand.nextInt(2);
+        if (turn == 0) {
+            player = 1;
+            Music = player1.getMusic();
+        } else {
+            player = 2;
+            Music = player2.getMusic();
+        }
+
+    }
+
+    /**
+     * Plays the music associated with the current player in a continuous loop.
+     *<p>
+     * <b>Pre-condition</b>: Music must be assigned to a valid File object.
+     * <p>
+     * <b>Post-condition</b>: The music starts playing and loops continuously.
+     * <p>
+     * <b>Invariant</b>: Only one music file plays at any given time.
+     */
+    public void playMusic() {
+        stopMusic();
+        try {
+            AudioInputStream m = AudioSystem.getAudioInputStream(Music);
+            clip = AudioSystem.getClip();
+            clip.open(m);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Stops the currently playing music
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: Music playback is stopped.
+     * <p>
+     * Invariant: The music file remains unchanged.
+     */
+    public void stopMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+        }
+    }
+
+    /**
+     * Checks if the music is currently playing.
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: The method returns true if the music is playing, false
+     * otherwise.
+     * <p>
+     * Invariant: The music status is consistent with the clip's running state.
+     *
+     * @return true if the music is playing, false otherwise.
+     */
+    public boolean isPlaying() {
+        return clip.isRunning();
+    }
+
+    /**
+     * Switches the turn to the next player and updates the music accordingly.
+     *<p>
+     * Pre-condition: player must be assigned.
+     * <p>
+     * Post-condition: player is switched to the other player, and
+     * their music starts playing.
+     * <p>
+     * Invariant: The turn alternates between player1 and player2.
+     */
+    public void changeTurn() {
+        if (player == 1) {
+            player = 2;
+            Music = player2.getMusic();
+        } else {
+            player = 1;
+            Music = player1.getMusic();
+        }
+        playMusic();
+    }
+
+    /**
+     * Moves a player's pawn based on the card's value and the specified path.
+     *<p>
+     * Pre-condition: The pawn, card, and path must be non-null and valid.
+     * <p>
+     * Post-condition: The pawn is moved along the specified path based on the
+     * card's value.
+     * <p>
+     * Invariant: The pawn always remains on a valid path.
+     *
+     * @param pawn the player's pawn to move.
+     * @param card the card determining the movement value.
+     * @param path the path on which the pawn moves.
+     */
+    public void movePawn(Pawn pawn, Card card, Path path) {
+
+    }
+
+    /**
+     * Runs a countdown timer for the player's turn. If time runs out, the turn
+     * ends.
+     *<p>
+     * Pre-condition: The game must be running.
+     * <p>
+     * Post-condition: The current player's turn ends when the timer reaches 0.
+     * <p>
+     * Invariant: The timer always starts at 30 seconds for each turn.
+     */
+    public void timer() {
+        while (isPlaying) {
+            Clip clip;
+            File countdown = new File("src/assets/music/countdown.wav");
+            try {
+                AudioInputStream m = AudioSystem.getAudioInputStream(countdown);
+                clip = AudioSystem.getClip();
+                clip.open(m);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            int seconds = 30;
+            for (int i = seconds; i > 0; i--) {
+                if (i <= 5) {
+                    clip.start();
+                }
+                System.out.println(i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.err.println(e);
+                    break;
+                }
+            }
+            changeTurn();
+            System.out.println("New Turn!");
+            clip.stop();
+        }
+    }
+
+    /**
+     * Checks if either player has won the game. If so, stops the game.
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: The game stops if a player wins.
+     * <p>
+     * Invariant: Only one player can win the game at a time.
+     *
+     * @return true if the game is still running, false if there is a winner.
+     */
+    public boolean Winner() {
+        //TODO: Implement win code.
+        player1.setHasWon(true); //test
+        if (player1.getVictoryStatus()) {
+            System.out.println("Player 1 wins!");
+            isPlaying = !isPlaying;
+        } else if (player2.getVictoryStatus()) {
+            System.out.println("Player 2 wins!");
+            isPlaying = !isPlaying;
+        }
+        return isPlaying;
+    }
+
+    /**
+     * Checks if the game is still running.
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: Returns the current game status.
+     * <p>
+     * Invariant: The game state remains consistent with the players' statuses.
+     *
+     * @return true if the game is running, false otherwise.
+     */
+    public boolean isGameRunning() {
+        return Winner();
+    }
+
+
+    /**
+     * Initializes the cards stack from the cards of the palaces
+     * <p>
+     * It also initializes the Player cards from the stack.
+     */
+    private void initializeCards() {
+        cardStack.addAll(knossos.getNumCards());
+        cardStack.addAll(malia.getNumCards());
+        cardStack.addAll(zakros.getNumCards());
+        cardStack.addAll(phaistos.getNumCards());
+        cardStack.addAll(knossos.getSpCards());
+        cardStack.addAll(malia.getSpCards());
+        cardStack.addAll(zakros.getSpCards());
+        cardStack.addAll(phaistos.getSpCards());
+        Collections.shuffle(cardStack);
+        for (int i=0;i<8;i++){
+            player1.getCards().add(cardStack.pop());
+            player2.getCards().add(cardStack.pop());
+        }
+    }
+
+    /**
+     * Initializes the game board by setting up necessary prerequisites for the game to begin.
+     * <p>
+     * Post-conditions:
+     * <p>
+     * - The game state is changed to active.
+     * <p>
+     * - The game board is initialized with players and palaces.
+     * <p>
+     * - The player who goes first in the game is selected.
+     * <p>
+     * - Music associated with the game starts playing.
+     */
+    public void initializeBoard() {
+        board = new Board();
+        board.setLayout(null);
+        JButton test = new JButton("Hello World");
+        test.setBounds(600, 300, 100, 50);
+        board.add(test);
+        board.repaint();
+        isPlaying = true;
+        initializePalaces();
+        InitializePlayers();
+        startingPlayer();
+        playMusic();
+    }
+    /**
+     * Starts a new game by"Total cards in stack: " +  reinitializing players, selecting the starting player
+     *<p>
+     * Pre-condition: None.
+     * <p>
+     * Post-condition: The game is reset, and a new game starts.
+     * <p>
+     * Invariant: The game always starts with two players.
+     */
+    public void startNewGame() throws LineUnavailableException, IOException {
+        initializeBoard();
+        board.setVisible(true);
+        System.out.println("New Game Started");
+        timer();
+    }
+
+    /**
+     * Determines if the current card allows a pawn to move based on the game rules.
+     *<p>
+     * <b>Pre-condition</b>: Both current card (c1) and previous card (c2) must not
+     * be null. The game should be in progress, with valid cards being used.
+     *<p>
+     * <b>Post-condition</b>: The method determines whether the pawn can move according
+     * to the current and previous cards, updating any applicable game state based on
+     * the card rules.
+     *<p>
+     * <b>Invariant</b>: The method does not modify the cards themselves but only
+     * evaluates the conditions for movement. The game state invariant of turn order
+     * remains consistent.
+     *
+     * @param c1 the current card being played.
+     * @param c2 the previous card played.
+     * @return true if the conditions for moving the pawn are met; false otherwise.
+     */
+    public boolean matchCard(Card c1, Card c2) {
+        //TODO: Implement logic that determines card type and the corresponding action.
+        return false;
+    }
+
+    /**
+     * Executes the action of throwing the specified card.
+     *<p>
+     * <b>Pre-condition</b>: The card (c1) must be a valid, non-null instance
+     * of the Card class that belongs to the current player's hand.
+     *<p>
+     * <b>Post-condition</b>: The specified card (c1) is removed from the player's
+     * hand and any game-specific effects associated with throwing the card are
+     * triggered.
+     *<p>
+     * <b>Invariant</b>: The method does not alter the fundamental state of the game
+     * other than the removal of the card from the player's hand and triggering the
+     * card's effects. The game maintains a valid state before and after the method
+     * execution.
+     *
+     * @param c1 the card to be thrown.
+     * @param pl the player playing.
+     * @param pl2 the opponent player that will have his card checked.
+     */
+    public void throwCard(Card c1, Player pl, Player pl2){
+        //TODO: Build game mechanic. Method is currently a placeholder and the parameters could be altered.
+        if(c1 != null){
+            if(matchCard(c1, pl2.getCards().get(0))){
+                pl.getCards().remove(c1);
+                pl.getCards().add(cardStack.pop());
+            }
+        }
+    }
+
+    /**
+     * Code is inspired from the MVC_CardGame we were provided as an example.
+     */
+
+    /**
+     * CardListener is a private inner class that implements MouseListener to handle mouse events
+     * for the board application. It listens to mouse interactions specifically on button components
+     * and triggers the corresponding actions when the game is running.
+     *
+     * Overrides methods from MouseListener to handle mouse events such as click, press, release,
+     * enter, and exit.
+     */
+    private class CardListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JButton button = (JButton) e.getSource();
+            if(!isGameRunning()){
+                return;
+            }
+            if (SwingUtilities.isLeftMouseButton(e)){
+                System.out.println("Left Click");
+
+            }
+            else if (SwingUtilities.isRightMouseButton(e)){
+                System.out.println("Right Click");
+            }
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    /**
+     * Attaches mouse listeners to each card in the specified palace.
+     *
+     * <b>Pre-condition</b>: The palace must be initialized with both regular cards
+     * and special cards, and each card must be capable of having a MouseListener
+     * attached.
+     *<p>
+     * <b>Post-condition</b>: Each regular and special card in the specified palace
+     * has a `CardListener` attached, facilitating mouse interaction.
+     *<p>
+     * <b>Invariant</b>: The total number of listeners corresponds with the total
+     * number of regular and special cards in the palace, ensuring each card
+     * is consistently managed.
+     *
+     * @param Palace the palace containing the cards to which listeners are to be attached
+     */
+    public void setCardListeners(palace Palace) {
+        for (int i = 0; i < Palace.getNumCards().size(); i++) {
+            Palace.getNumCards().get(i).setMouseListener(new CardListener());
+        }
+        for (int i = 0; i<Palace.getSpCards().size(); i++){
+            Palace.getSpCards().get(i).setMouseListener(new CardListener());
+        }
+    }
+
+    /**
+     * Checks if the given position contains a finding and returns it.
+     * <p>
+     * <b>Pre-condition</b>: The position provided must not be null. It is expected to be
+     * an instance of FindingPosition for any findings to be retrieved.
+     * <p>
+     * <b>Post-condition</b>: Returns the Finding associated with the position, or null
+     * if the position does not contain a finding or is not an instance of FindingPosition.
+     * <p>
+     * <b>Invariant</b>: The position's state remains unchanged by this method.
+     *
+     * @param p the position to check for a finding. It should ideally be an instance of FindingPosition.
+     * @return the finding associated with the position if it exists; null otherwise.
+     */
+    public Finding hasFinding(Position p){
+        if (p instanceof FindingPosition){
+            Finding posFind = ((FindingPosition) p).getFind();
+            ((FindingPosition) p).setFind(null);
+            return posFind;
+        }
+        else return null;
+    }
+
+    /**
+     * The main method serves as the entry point for the application, initializing
+     * and starting a new game session.
+     *<p>
+     * <b>Pre-condition</b>: The system must support audio playback, and all necessary
+     * game resources (such as audio files) must be available and correctly formatted.
+     *<p>
+     * <b>Post-condition</b>: A new game session is initialized and started. The application
+     * enters its main loop, handling user input and game events.
+     *<p>
+     * <b>Invariant</b>: The main method continually maintains control of the application flow
+     * until termination, ensuring that resources such as audio lines are properly managed
+     * and released. Command-line arguments are not utilized.
+     *
+     * @param args command-line arguments (not used).
+     * @throws UnsupportedAudioFileException if there is a problem with the audio file format.
+     * @throws LineUnavailableException if the audio line cannot be opened.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void main(String[] args) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        Controller controller = new Controller();
+        controller.startNewGame();
+    }
+}

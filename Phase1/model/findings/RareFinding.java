@@ -4,12 +4,13 @@ import javax.swing.*;
 
 public class RareFinding extends Finding{
     /**
-     * <b>Constructor</b>: Initializes a Finding Object.
+     * Constructs a RareFinding object with the specified points, finding image, and finding name.
      *
-     * @param points       Value of points of the Card.
-     * @param findingImage Image of the Archaeological Finding.
+     * @param points The points associated with the RareFinding object.
+     * @param findingImage The ImageIcon representing the image of the RareFinding.
+     * @param findingName The name of the RareFinding.
      */
-    public RareFinding(int points, ImageIcon findingImage) {
-        super(points, findingImage);
+    public RareFinding(int points, ImageIcon findingImage, String findingName) {
+        super(points, findingImage, findingName);
     }
 }

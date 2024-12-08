@@ -2,49 +2,37 @@ package Phase1.model.positions;
 
 import javax.swing.*;
 
-public class SimplePosition implements Position {
-    private int points;
-    private ImageIcon image;
+public class SimplePosition extends Position {
+    private Square square;
 
     /**
-     * Creates a new simple position object.
-     * @param image Image of the SimplePosition;
-     * @param points Points of the SimplePosition
+     * Constructs a new SimplePosition object with the provided x-coordinate, Path, points, and square.
+     *
+     * @param x The x-coordinate of the SimplePosition.
+     * @param path The Path name associated with the SimplePosition.
+     * @param square The Square object associated with the SimplePosition.
      */
-    public SimplePosition(ImageIcon image ,int points) {
-        this.points = points;
-        this.image = image;
+    public SimplePosition(int x, String path, Square square) {
+        super(x, path);
+        this.square = square;
+    }
+
+
+    /**
+     * Retrieves the Square object associated with this SimplePosition.
+     *
+     * @return the Square object associated with this SimplePosition.
+     */
+    public Square getSquare() {
+        return square;
     }
 
     /**
-     * Returns the points of the SimplePosition.
-     * @return Points of SimplePosition.
+     * Sets the Square object associated with this SimplePosition.
+     *
+     * @param square The Square object to be set for this SimplePosition.
      */
-    public int getPoints() {
-        return points;
-    }
-
-    /**
-     * Sets the points of the SimplePosition.
-     * @param points of SimplePosition.
-     */
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    /**
-     * Returns the image of the SimplePosition.
-     * @return Image of SimplePosition.
-     */
-    public ImageIcon getPositionImage() {
-        return image;
-    }
-
-    /**
-     * Sets the image of the SimplePosition.
-     * @param positionImage
-     */
-    public void setPositionImage(ImageIcon positionImage) {
-        this.image = positionImage;
+    public void setSquare(Square square) {
+        this.square = square;
     }
 }

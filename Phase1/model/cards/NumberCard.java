@@ -19,7 +19,9 @@ public class NumberCard extends Card{
     }
 
     /**
-     * @return Returns the value of the card.
+     * Retrieves the points associated with the NumberCard.
+     *
+     * @return The number of points corresponding to the NumberCard.
      */
     public int getPoints(){
         return number;

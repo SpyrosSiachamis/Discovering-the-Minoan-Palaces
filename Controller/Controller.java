@@ -7,14 +7,12 @@ import Phase1.model.pawns.Pawn;
 import Phase1.model.positions.FindingPosition;
 import Phase1.model.positions.Path;
 import Phase1.model.positions.Position;
-import com.sun.xml.internal.bind.v2.TODO;
-import view.Board;
+import Phase1.View;
 import Phase1.model.palace;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -37,11 +35,12 @@ public class Controller {
     palace zakros;
     palace phaistos;
     private Stack<Card> cardStack = new Stack<>();
+    private ArrayList<Finding> rareFindings = new ArrayList<>();
 
     private File Music;
     private Clip clip;
     private boolean isPlaying = true;
-    Board board;
+    View view;
     int player = 0;
 
     /**
@@ -83,9 +82,63 @@ public class Controller {
         setCardListeners(malia);
         setCardListeners(zakros);
         setCardListeners(phaistos);
-
         initializeCards();
 
+        rareFindings.add(new Finding(30,new ImageIcon("Phase1/assets/images/findings/diskos.jpg"),"diskos"));
+        rareFindings.add(new Finding(25,new ImageIcon("Phase1/assets/images/findings/kosmima.jpg"),"kosmima"));
+        rareFindings.add(new Finding(25,new ImageIcon("Phase1/assets/images/findings/ring.jpg"),"ring"));
+        rareFindings.add(new Finding(25,new ImageIcon("Phase1/assets/images/findings/ruto.jpg"),"ruto"));
+
+        Random rand = new Random();
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) phaistos.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) knossos.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) malia.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        while(true)
+        {
+            try {
+                FindingPosition position = (FindingPosition) zakros.getPath().getPositions().get(rand.nextInt(8));
+                if (position instanceof FindingPosition){
+                    ((FindingPosition) position).setFind(rareFindings.get(0));
+                    break;
+                }
+            } catch (ClassCastException ignored) {
+            }
+        }
+        for (int i=0;i<9;i++){
+            if (knossos.getPath().getPositions().get(i) instanceof FindingPosition) {
+                System.out.println(((FindingPosition) knossos.getPath().getPositions().get(i)).getFind());
+            }
+        }
         System.out.println("Total cards in stack: " + cardStack.size());
     }
 
@@ -100,9 +153,9 @@ public class Controller {
      */
     private void InitializePlayers() {
         player1 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
-                new File("Phase1/assets/music/Player1.wav"));
+                new File("Phase1/assets/music/Player1.wav"), "Player 1");
         player2 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
-                new File("Phase1/assets/music/Player2.wav"));
+                new File("Phase1/assets/music/Player2.wav"), "Player 2");
     }
 
     /**
@@ -301,8 +354,11 @@ public class Controller {
     }
 
 
-
-
+    /**
+     * Initializes the cards stack from the cards of the palaces
+     * <p>
+     * It also initializes the Player cards from the stack.
+     */
     private void initializeCards() {
         cardStack.addAll(knossos.getNumCards());
         cardStack.addAll(malia.getNumCards());
@@ -319,14 +375,37 @@ public class Controller {
         }
     }
 
-    public void initializeBoard(){
+    /**
+     * Initializes the game board by setting up necessary prerequisites for the game to begin.
+     * The method begins by setting the 'isPlaying' flag to true,
+     * indicates the game is now in active state.
+     * It then initializes the structure and components of the board including palaces and players.
+     * As part of the game initiation, a starting player is also set, and musical components involved in the gameplay are activated.
+     *
+     * <p>
+     * Post-conditions:
+     * <p>
+     * - The game state is changed to active.
+     * <p>
+     * - The game board is initialized with players and palaces.
+     * <p>
+     * - The player who goes first in the game is selected.
+     * <p>
+     * - Music associated with the game starts playing.
+     */
+    public void initializeBoard() {
+        view = new View();
+        view.setLayout(null);
+        JButton test = new JButton("Hello World");
+        test.setBounds(600, 300, 100, 50);
+        view.add(test);
+        view.repaint();
         isPlaying = true;
         initializePalaces();
         InitializePlayers();
         startingPlayer();
         playMusic();
     }
-
     /**
      * Starts a new game by"Total cards in stack: " +  reinitializing players, selecting the starting player,
      * begins a timer for the player round and finally playing their music.
@@ -339,10 +418,9 @@ public class Controller {
      */
     public void startNewGame() throws LineUnavailableException, IOException {
         initializeBoard();
-        board = new Board();
-        board.setVisible(true);
+        view.setVisible(true);
         System.out.println("New Game Started");
-        //timer();
+        timer();
     }
 
     /**
@@ -500,7 +578,9 @@ public class Controller {
      */
     Finding hasFinding(Position p){
         if (p instanceof FindingPosition){
-            return ((FindingPosition) p).getFind();
+            Finding posFind = ((FindingPosition) p).getFind();
+            ((FindingPosition) p).setFind(null);
+            return posFind;
         }
         else return null;
     }

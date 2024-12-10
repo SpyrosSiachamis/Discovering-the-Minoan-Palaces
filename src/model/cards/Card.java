@@ -1,5 +1,6 @@
 package src.model.cards;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseListener;
 
 public abstract class Card {
@@ -20,6 +21,12 @@ public abstract class Card {
     public Card(ImageIcon minImage, String palace) {
         this.minImage = minImage;
         this.Palace = palace;
+        ImageIcon originalIcon = minImage;
+        Image scaledImage = originalIcon.getImage().getScaledInstance(67,95,Image.SCALE_SMOOTH);
+        cardButton = new JButton(new ImageIcon(scaledImage));
+        cardButton.setBorderPainted(false);
+        cardButton.setContentAreaFilled(false);
+        cardButton.setFocusPainted(true);
     }
 
     /**
@@ -62,7 +69,13 @@ public abstract class Card {
         Palace = palace;
     }
 
+    public JButton getCardButton() {
+        return cardButton;
+    }
 
+    public void setCardButton(JButton cardButton) {
+        this.cardButton = cardButton;
+    }
 
     @Override
     public String toString() {

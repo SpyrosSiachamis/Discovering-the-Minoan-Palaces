@@ -4,6 +4,7 @@ public abstract class Position {
     private int x;
     private String path;
     private int points;
+    private Square square;
 
     /**
      * Represents a position with an x-coordinate and a path associated with it.
@@ -11,10 +12,11 @@ public abstract class Position {
      * @param x The x-coordinate of the Position.
      * @param path The Path name associated with the Position.
      */
-    public Position(int x, String path) {
+    public Position(int x, String path, Square square) {
         this.x = x;
         this.path = path;
         this.points = 0;
+        this.square = square;
     }
 
     /**
@@ -70,5 +72,13 @@ public abstract class Position {
      */
     public int getPoints() {
         return points;
+    }
+
+    public Square getSquare() {
+        return square;
+    }
+
+    public void setSquare(Square square) {
+        this.square = square;
     }
 }

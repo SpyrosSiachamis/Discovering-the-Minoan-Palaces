@@ -16,6 +16,8 @@ import src.model.palace;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -37,14 +39,17 @@ public class Controller {
     palace malia;
     palace zakros;
     palace phaistos;
-    private Stack<Card> cardStack = new Stack<>();
+    private Stack<Card> cardStack = new Stack<Card>();
     private ArrayList<Finding> rareFindings = new ArrayList<>();
-
+    public playerPanel pl1;
+    public playerPanel pl2;
     private File Music;
     private Clip clip;
     private boolean isPlaying = true;
     Board board;
     int player = 0;
+    int checkPoints = 0;
+    int disposedCards =0;
 
     /**
      * Constructs a src.Controller instance and initializes the game state.
@@ -81,13 +86,6 @@ public class Controller {
         malia = new palace("malia", new Path("malia"));
         zakros = new palace("zakros", new Path("zakros"));
         phaistos = new palace("phaistos", new Path("phaistos"));
-        /*setCardListeners(knossos);
-        setCardListeners(malia);
-        setCardListeners(zakros);
-        setCardListeners(phaistos);
-        */
-        initializeCards();
-
         rareFindings.add(new Finding(30,new ImageIcon("src/assets/images/findings/diskos.jpg"),"diskos"));
         rareFindings.add(new Finding(25,new ImageIcon("src/assets/images/findings/kosmima.jpg"),"kosmima"));
         rareFindings.add(new Finding(25,new ImageIcon("src/assets/images/findings/ring.jpg"),"ring"));
@@ -143,7 +141,6 @@ public class Controller {
                 System.out.println(((FindingPosition) knossos.getPath().getPositions().get(i)).getFind());
             }
         }
-        System.out.println("Total cards in stack: " + cardStack.size());
     }
 
     /**
@@ -257,12 +254,30 @@ public class Controller {
     public void changeTurn() {
         if (player == 1) {
             player = 2;
+            board.add(pl2);
+            board.remove(pl1);
             Music = player2.getMusic();
         } else {
             player = 1;
+            board.add(pl1);
+            board.remove(pl2);
             Music = player1.getMusic();
         }
+        disposedCards=0;
+        updateBoard();
         playMusic();
+    }
+
+    public void updateBoard(){
+        SwingUtilities.invokeLater(() -> {
+            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
+                    "<br> Check Points: " + checkPoints +
+                    "<br> Turn: " + player + "</html>");
+
+            // Force a refresh of the label and board
+            board.revalidate();
+            board.repaint();
+        });
     }
 
     /**
@@ -305,17 +320,17 @@ public class Controller {
                 throw new RuntimeException(e);
             }
             int seconds = 30;
-            for (int i = seconds; i > 0; i--) {
-                if (i <= 5) {
-                    clip.start();
-                }
-                System.out.println(i);
+            for (int i = seconds; i >= 0; i--) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     System.err.println(e);
                     break;
                 }
+                if (i <= 5) {
+                    clip.start();
+                }
+                System.out.println(i);
             }
             changeTurn();
             System.out.println("New Turn!");
@@ -336,7 +351,6 @@ public class Controller {
      */
     public boolean Winner() {
         //TODO: Implement win code.
-        player1.setHasWon(true); //test
         if (player1.getVictoryStatus()) {
             System.out.println("Player 1 wins!");
             isPlaying = !isPlaying;
@@ -369,6 +383,10 @@ public class Controller {
      * It also initializes the Player cards from the stack.
      */
     private void initializeCards() {
+        setCardListeners(knossos);
+        setCardListeners(malia);
+        setCardListeners(zakros);
+        setCardListeners(phaistos);
         cardStack.addAll(knossos.getNumCards());
         cardStack.addAll(malia.getNumCards());
         cardStack.addAll(zakros.getNumCards());
@@ -377,11 +395,17 @@ public class Controller {
         cardStack.addAll(malia.getSpCards());
         cardStack.addAll(zakros.getSpCards());
         cardStack.addAll(phaistos.getSpCards());
+
         Collections.shuffle(cardStack);
         for (int i=0;i<8;i++){
             player1.getCards().add(cardStack.pop());
+
+            player1.getCards().get(i).getCardButton().putClientProperty("player", player1); // Associate the card with player1
+
             player2.getCards().add(cardStack.pop());
+            player2.getCards().get(i).getCardButton().putClientProperty("player", player2);
         }
+        System.out.println(cardStack.size());
         System.out.println("Player 1 cards: ");
         for (int i=0; i<8; i++){
             System.out.println(player1.getCards().get(i).toString());
@@ -408,32 +432,33 @@ public class Controller {
         InitializePlayers();
         startingPlayer();
         initializeCards();
-        playerPanel pl1 = new playerPanel(player1);
-        pl1.setBounds(0,0,pl1.getWidth(),pl1.getHeight());
-        playerPanel pl2 = new playerPanel(player2);
-        pl2.setBounds(0,703,pl2.getWidth(), pl2.getHeight());
+        pl1 = new playerPanel(player1);
+        pl2 = new playerPanel(player2);
+        pl1.setBounds(0,0,pl1.getWidth()-15,pl1.getHeight());
+        pl2.setBounds(0,688,pl2.getWidth()-15, pl2.getHeight());
         for (int i=0; i<8; i++){
-            ImageIcon originalIcon = player1.getCards().get(i).getImage();
-            Image scaledImage = originalIcon.getImage().getScaledInstance(67,95,Image.SCALE_SMOOTH);
-            JButton but = new JButton(new ImageIcon(scaledImage));
-            but.setBorderPainted(false);
-            but.setContentAreaFilled(false);
-            but.setFocusPainted(true);
-            pl1.cardsPanel.add(but);
+            pl1.cardsPanel.add(player1.getCards().get(i).getCardButton());
+            pl2.cardsPanel.add(player2.getCards().get(i).getCardButton());
+        }
 
-
-            originalIcon = player2.getCards().get(i).getImage();
-            scaledImage = originalIcon.getImage().getScaledInstance(67,95,Image.SCALE_SMOOTH);
-            JButton but2 = new JButton(new ImageIcon(scaledImage));
-            but2.setBorderPainted(false);
-            but2.setContentAreaFilled(false);
-            but2.setFocusPainted(true);
-            pl2.cardsPanel.add(but2);
+        board.add(pl1);
+        board.add(pl2);
+        JPanel cover = new JPanel();
+        cover.setBounds(0,0,1280,150);
+        cover.setLayout(null);
+        cover.setBackground(Color.GRAY);
+        if (player == 1){
+            board.remove(pl2);
+            board.add(pl1);
+        }
+        else{
+            board.remove(pl1);
+            board.add(pl2);
         }
         isPlaying = true;
         playMusic();
-        board.add(pl1);
-        board.add(pl2);
+        board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ checkPoints +"<br> Turn: "+player+"</html>");
+        board.revalidate();
         board.repaint();
     }
     /**
@@ -503,6 +528,61 @@ public class Controller {
             }
         }
     }
+    public void pullCard(Player player, JPanel panel) {
+
+        if (player.getCards().size() == 8) {
+            System.out.println("Player has max cards");
+        }
+        else if (disposedCards > 0) {
+            System.out.println("Player has already disposed a card");
+        }
+        else {
+            player.getCards().add(cardStack.pop());
+            int lastCardIndex = player.getCards().size() - 1;
+            Card newCard = player.getCards().get(lastCardIndex);
+            newCard.getCardButton().putClientProperty("player", player);
+            panel.add(newCard.getCardButton());
+            disposedCards++;
+            panel.revalidate();
+            panel.repaint();
+            updateBoard();
+        }
+    }
+
+    public void disposeCard(Card c1, Player player, JPanel panel) {
+        if (player.getCards().size() < 8)
+        {
+            System.out.println("Less than 8 cards");
+            return;
+        }
+        else
+        {
+            for (int i = 0; i < player.getCards().size(); i++) {
+                if (player.getCards().get(i) == c1) {
+                    // Remove card from player's list
+                    player.getCards().remove(i);
+                    System.out.println("Card Disposed");
+
+                    // Find and remove the corresponding JButton from the panel
+                    for (Component component : panel.getComponents()) {
+                        if (component instanceof JButton) {
+                            JButton button = (JButton) component;
+                            Card card = (Card) button.getClientProperty("card");
+                            if (card == c1) {
+                                panel.remove(button);  // Remove the button from the panel
+                                break;
+                            }
+                        }
+                    }
+
+                    // Revalidate and repaint the panel to reflect the changes
+                    panel.revalidate();
+                    panel.repaint();
+                    return;  // Exit after removing the card
+                }
+            }
+        }
+    }
 
     /**
      * Code is inspired from the MVC_CardGame we were provided as an example.
@@ -519,23 +599,81 @@ public class Controller {
     private class CardListener implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            JButton button = (JButton) e.getSource();
-            if(!isGameRunning()){
+            if (!(e.getSource() instanceof JButton)) {
                 return;
             }
-            if (SwingUtilities.isLeftMouseButton(e)){
-                System.out.println("Left Click");
+            JButton button = (JButton) e.getSource();
+            Player player = (Player) button.getClientProperty("player");
+            JPanel panel = (JPanel) button.getParent();
+            Card card = (Card) button.getClientProperty("card");
 
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                System.out.println("left click");
+            } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+                disposeCard(card, player, panel);
+                board.repaint();
             }
-            else if (SwingUtilities.isRightMouseButton(e)){
-                System.out.println("Right Click");
-            }
-
+            // Consume the event to prevent propagation
+            e.consume();
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
+            if (!(e.getSource() instanceof JButton)) {
+                return;
+            }
+            JButton button = (JButton) e.getSource();
+            Player player = (Player) button.getClientProperty("player");
+            JPanel panel = (JPanel) button.getParent();
+            Card card = (Card) button.getClientProperty("card");
 
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                System.out.println("left click");
+            } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+                disposeCard(card, player, panel);
+                board.repaint();
+            }
+
+            // Consume the event to prevent propagation
+            e.consume();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    private class StackListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (!(e.getSource() instanceof JButton)) {
+                System.out.println("Not a button");
+            } else if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                JButton button = (JButton) e.getSource();
+                if (player ==1){
+                    pullCard(player1, pl1.cardsPanel);
+                }
+                else{
+                    pullCard(player2, pl2.cardsPanel);
+                }
+                board.repaint();
+                e.consume();
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
         }
 
         @Override
@@ -570,14 +708,19 @@ public class Controller {
      *
      * @param Palace the palace containing the cards to which listeners are to be attached
      */
-    /*public void setCardListeners(palace Palace) {
+    public void setCardListeners(palace Palace) {
         for (int i = 0; i < Palace.getNumCards().size(); i++) {
-            Palace.getNumCards().get(i).setcardButton(new JButton(new CardListener());
+            Palace.getNumCards().get(i).getCardButton().addMouseListener(new CardListener());
+            Palace.getNumCards().get(i).getCardButton().putClientProperty("card", Palace.getNumCards().get(i)); // Associate the card with the button
+
         }
         for (int i = 0; i<Palace.getSpCards().size(); i++){
-            Palace.getSpCards().get(i).setMouseListener(new CardListener());
+            Palace.getSpCards().get(i).getCardButton().addMouseListener(new CardListener());
+            Palace.getSpCards().get(i).getCardButton().putClientProperty("card", Palace.getSpCards().get(i)); // Associate the card with the button
         }
-    }*/
+
+        board.cardStackBut.addMouseListener(new StackListener());
+    }
 
     /**
      * Checks if the given position contains a finding and returns it.

@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class Path{
     private ArrayList<Position> path = new ArrayList<Position>();
     private String pathName;
-    private ArrayList<Pawn> pathPawns = new ArrayList<Pawn>();
     /**
      * <b>Constructor</b>: Constructs a new Path Object.
      * <p>

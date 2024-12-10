@@ -7,8 +7,11 @@ import java.awt.*;
 
 public class playerPanel extends JLayeredPane {
     JPanel panel;
-    JLabel playerStats;
+    public JLabel playerStats;
     public JPanel cardsPanel;
+    public JLabel score;
+    public JLabel statues;
+    JButton wallPaintings;
     public playerPanel(Player player) {
         panel = new JPanel();
         setLayout(null);

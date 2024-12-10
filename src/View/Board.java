@@ -1,4 +1,4 @@
-package src;
+package src.View;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class Board extends JFrame {
         setSize(1280,900);
         setLocationRelativeTo(null);
 
-       /* JMenuBar menuBar = new JMenuBar();
+       JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
         JMenuItem newGame = new JMenuItem("New Game");
@@ -42,22 +42,6 @@ public class Board extends JFrame {
         menuBar.add(cont);
         menuBar.add(mute);
         menuBar.add(exit);
-
-        framePanel = new JPanel();
-        framePanel.setLayout(new BorderLayout());
-
-        JPanel Player1 = new JPanel();
-        Player1.setBorder(new LineBorder(Color.RED,5));
-        Player1.setBounds(0,0,1280,150);
-        JPanel Player2 = new JPanel();
-        Player2.setBorder(new LineBorder(Color.GREEN,5));
-        Player2.setBounds(0,722,1280,150);
-        add(Player1);
-        add(Player2);*/
-        //add(framePanel, BorderLayout.CENTER);
-
-
-
         setResizable(false);
     }
 }

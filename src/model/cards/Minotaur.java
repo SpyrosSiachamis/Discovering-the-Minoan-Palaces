@@ -3,13 +3,19 @@ package src.model.cards;
 import javax.swing.*;
 
 public class Minotaur extends SpecialCard {
+
     /**
-     * <b>Constructor</b>: Initializes a Minotaur Card Class
-     * It inherits the constructor of the Card abstract class
-     * @param Image
-     * @param palace
+     * <b>Constructor</b>: Constructs a new `Card` object.
+     * <p>
+     * Initializes the `Card` with a provided ImageIcon and palace name string.
+     * <p>
+     * Precondition: `minImage` input should be a non-null ImageIcon. `palace` must be a valid non-empty String.
+     *
+     * @param minImage The ImageIcon representing the image of the card.
+     * @param palace   The name of the palace that the card is associated with.
      */
-    public Minotaur(ImageIcon Image, String palace) {
-        super(Image, palace);
+    public Minotaur(ImageIcon minImage, String palace) {
+        super(minImage, palace);
+
     }
 }

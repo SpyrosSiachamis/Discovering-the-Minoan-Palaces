@@ -12,11 +12,8 @@ public abstract class Pawn {
      * Constructs a new Pawn object with the given Position and Image.
      *
      * @param position The Position object representing the current position of the Pawn.
-     * @param image The Image object representing the visual representation of the Pawn.
      */
-    public Pawn(Position position, Image image) {
-        this.position = position;
-        this.image = image;
+    public Pawn() {
     }
 
 

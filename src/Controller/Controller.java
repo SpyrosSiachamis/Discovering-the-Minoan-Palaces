@@ -1,17 +1,21 @@
 package src.Controller;
 
+import src.View.playerPanel;
 import src.model.Player;
 import src.model.cards.Card;
 import src.model.findings.Finding;
+import src.model.pawns.Arch;
 import src.model.pawns.Pawn;
+import src.model.pawns.Thesseus;
 import src.model.positions.FindingPosition;
 import src.model.positions.Path;
 import src.model.positions.Position;
-import src.Board;
+import src.View.Board;
 import src.model.palace;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -77,10 +81,11 @@ public class Controller {
         malia = new palace("malia", new Path("malia"));
         zakros = new palace("zakros", new Path("zakros"));
         phaistos = new palace("phaistos", new Path("phaistos"));
-        setCardListeners(knossos);
+        /*setCardListeners(knossos);
         setCardListeners(malia);
         setCardListeners(zakros);
         setCardListeners(phaistos);
+        */
         initializeCards();
 
         rareFindings.add(new Finding(30,new ImageIcon("src/assets/images/findings/diskos.jpg"),"diskos"));
@@ -151,10 +156,15 @@ public class Controller {
      * <b>Invariant</b>: Each player has their respective music file assigned.
      */
     private void InitializePlayers() {
-        player1 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
-                new File("src/assets/music/Player1.wav"), "Player 1");
-        player2 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),
-                new File("src/assets/music/Player2.wav"), "Player 2");
+        player1 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),new File("src/assets/music/Player1.wav"), "1");
+        player2 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),new File("src/assets/music/Player2.wav"), "2");
+
+        for (int i=0; i<3; i++){
+            player1.getPawns().add(new Arch());
+            player2.getPawns().add(new Arch());
+        }
+        player1.getPawns().add(new Thesseus());
+        player2.getPawns().add(new Thesseus());
     }
 
     /**
@@ -372,6 +382,10 @@ public class Controller {
             player1.getCards().add(cardStack.pop());
             player2.getCards().add(cardStack.pop());
         }
+        System.out.println("Player 1 cards: ");
+        for (int i=0; i<8; i++){
+            System.out.println(player1.getCards().get(i).toString());
+        }
     }
 
     /**
@@ -390,15 +404,37 @@ public class Controller {
     public void initializeBoard() {
         board = new Board();
         board.setLayout(null);
-        JButton test = new JButton("Hello World");
-        test.setBounds(600, 300, 100, 50);
-        board.add(test);
-        board.repaint();
-        isPlaying = true;
         initializePalaces();
         InitializePlayers();
         startingPlayer();
+        initializeCards();
+        playerPanel pl1 = new playerPanel(player1);
+        pl1.setBounds(0,0,pl1.getWidth(),pl1.getHeight());
+        playerPanel pl2 = new playerPanel(player2);
+        pl2.setBounds(0,703,pl2.getWidth(), pl2.getHeight());
+        for (int i=0; i<8; i++){
+            ImageIcon originalIcon = player1.getCards().get(i).getImage();
+            Image scaledImage = originalIcon.getImage().getScaledInstance(67,95,Image.SCALE_SMOOTH);
+            JButton but = new JButton(new ImageIcon(scaledImage));
+            but.setBorderPainted(false);
+            but.setContentAreaFilled(false);
+            but.setFocusPainted(true);
+            pl1.cardsPanel.add(but);
+
+
+            originalIcon = player2.getCards().get(i).getImage();
+            scaledImage = originalIcon.getImage().getScaledInstance(67,95,Image.SCALE_SMOOTH);
+            JButton but2 = new JButton(new ImageIcon(scaledImage));
+            but2.setBorderPainted(false);
+            but2.setContentAreaFilled(false);
+            but2.setFocusPainted(true);
+            pl2.cardsPanel.add(but2);
+        }
+        isPlaying = true;
         playMusic();
+        board.add(pl1);
+        board.add(pl2);
+        board.repaint();
     }
     /**
      * Starts a new game by"Total cards in stack: " +  reinitializing players, selecting the starting player
@@ -534,14 +570,14 @@ public class Controller {
      *
      * @param Palace the palace containing the cards to which listeners are to be attached
      */
-    public void setCardListeners(palace Palace) {
+    /*public void setCardListeners(palace Palace) {
         for (int i = 0; i < Palace.getNumCards().size(); i++) {
-            Palace.getNumCards().get(i).setMouseListener(new CardListener());
+            Palace.getNumCards().get(i).setcardButton(new JButton(new CardListener());
         }
         for (int i = 0; i<Palace.getSpCards().size(); i++){
             Palace.getSpCards().get(i).setMouseListener(new CardListener());
         }
-    }
+    }*/
 
     /**
      * Checks if the given position contains a finding and returns it.

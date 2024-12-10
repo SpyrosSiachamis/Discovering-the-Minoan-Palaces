@@ -5,8 +5,8 @@ import java.awt.event.MouseListener;
 public abstract class Card {
     private ImageIcon minImage;
     private String Palace;
+    private JButton cardButton;
 
-    private MouseListener mouseListener;
     /**
      * <b>Constructor</b>: Constructs a new `Card` object.
      * <p>
@@ -20,7 +20,6 @@ public abstract class Card {
     public Card(ImageIcon minImage, String palace) {
         this.minImage = minImage;
         this.Palace = palace;
-
     }
 
     /**
@@ -63,26 +62,10 @@ public abstract class Card {
         Palace = palace;
     }
 
-    /**
-     * Retrieves the `MouseListener` associated with the Card.
-     * It is responsible for handling any mouse interactions with the card.
-     *
-     * @return The `MouseListener` attached to this card.
-     */
-    public MouseListener getMouseListener() {
-        return mouseListener;
-    }
 
-    /**
-     * Sets a `MouseListener` to the card.
-     * This listener will handle any mouse interactions with this card.
-     *
-     * @param mouseListener A mouseListener representing the new mouse interaction handler
-     *                      for this card.
-     * <p>
-     * Precondition: `mouseListener` input is a valid `MouseListener` object.
-     */
-    public void setMouseListener(MouseListener mouseListener) {
-        this.mouseListener = mouseListener;
+
+    @Override
+    public String toString() {
+        return "Card [Palace=" + Palace + ", Image=" + minImage + "]";
     }
 }

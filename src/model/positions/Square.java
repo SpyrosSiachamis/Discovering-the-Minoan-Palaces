@@ -1,6 +1,7 @@
 package src.model.positions;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Square{
     ImageIcon SquareImage; //The image of the Square object.

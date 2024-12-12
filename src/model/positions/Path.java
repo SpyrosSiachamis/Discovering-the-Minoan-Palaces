@@ -41,20 +41,20 @@ public class Path{
                 if(points ==20){
                     points = 30;
                 }
-                if ((i+1) % 2 == 0){
-                    path.add(new SimplePosition(i,pathName,new Square(new ImageIcon("assets/images/paths/"+pathName+".jpg"))));
-                    path.get(i).setPath(pathName);
+                if ((i+1) % 2 == 1){
+                    Square pathSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+".jpg"));
+                    path.add(new SimplePosition(i,pathName,pathSquare));
                 }
-                if ((i+1)%2 == 1){
-                    FindingPosition  find = new FindingPosition(i,pathName,new Square(new ImageIcon("assets/images/paths/"+pathName+"2.jpg")));
-                    find.setPoints(points);
-                    path.add(find);
+                if ((i+1)%2 == 0){
+                    Square pathSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+"2.jpg"));
+                    path.add(new FindingPosition(i,pathName,pathSquare));
                 }
                 path.get(i).setPoints(points);
                 points+=5;
                 if (i==8){
                     points = 50;
-                    FindingPosition palace = new FindingPosition(i,pathName,new Square(new ImageIcon("assets/images/paths/"+pathName+"Palace.jpg")));
+                    Square palaceSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+"Palace.jpg"));
+                    FindingPosition palace = new FindingPosition(i,pathName,palaceSquare);
                     palace.setPoints(points);
                     path.add(palace);
                 }

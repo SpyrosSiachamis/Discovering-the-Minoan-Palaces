@@ -50,6 +50,10 @@ public class Controller {
     Board board;
     int player = 0;
     int disposedCards =0;
+    JButton knossosPalace = new JButton();
+    JButton maliaPalace = new JButton();
+    JButton zakrosPalace = new JButton();
+    JButton phaistosPalace = new JButton();
 
     /**
      * Constructs a src.Controller instance and initializes the game state.
@@ -463,18 +467,87 @@ public class Controller {
         cover.setBounds(0,0,1280,150);
         cover.setLayout(null);
         cover.setBackground(Color.GRAY);
-//        for (int i=0; i<8; i++)
-//        {
-//            board.knossosPath.add(new JLabel(new ImageIcon("src/assets/images/paths/knossos.jpg")));
-//        }
-//        if (player == 1){
-//            board.remove(pl2);
-//            board.add(pl1);
-//        }
-//        else{
-//            board.remove(pl1);
-//            board.add(pl2);
-//        }
+
+        for (int i=0; i<9; i++)
+        {
+            if (i ==8){
+                knossosPalace.setBounds(1100,55,130,90);
+                maliaPalace.setBounds(1100,165,130,90);
+                phaistosPalace.setBounds(1100,275,130,90);
+                zakrosPalace.setBounds(1100,385,130,90);
+                ImageIcon palaceI = new ImageIcon(String.valueOf(knossos.getPath().getPositions().get(i).getSquare().getSquareImage()));
+                Image scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
+
+                knossosPalace.setIcon(new ImageIcon(scaled));
+                board.Dashboard.add(knossosPalace, JLayeredPane.PALETTE_LAYER);
+
+                palaceI.setImage(new ImageIcon(String.valueOf(malia.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
+                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
+                maliaPalace.setIcon(new ImageIcon(scaled));
+                board.Dashboard.add(maliaPalace, JLayeredPane.PALETTE_LAYER);
+
+                palaceI.setImage(new ImageIcon(String.valueOf(phaistos.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
+                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
+
+                phaistosPalace.setIcon(new ImageIcon(scaled));
+                board.Dashboard.add(phaistosPalace,JLayeredPane.PALETTE_LAYER);
+
+
+                palaceI.setImage(new ImageIcon(String.valueOf(zakros.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
+                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
+                zakrosPalace.setIcon(new ImageIcon(scaled));
+                board.Dashboard.add(zakrosPalace, JLayeredPane.PALETTE_LAYER);
+                break;
+            }
+            else {
+                JButton kButton = new JButton();
+                JButton mButton = new JButton();
+                JButton pButton = new JButton();
+                JButton zButton = new JButton();
+
+                kButton.setBorderPainted(false);
+                kButton.setOpaque(false);
+                kButton.setContentAreaFilled(false);
+                ImageIcon pathImage = new ImageIcon(String.valueOf(knossos.getPath().getPositions().get(i).getSquare().getSquareImage()));
+                Image scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
+                kButton.setIcon(new ImageIcon(scaledPath));
+
+                mButton.setContentAreaFilled(false);
+                mButton.setBorderPainted(false);
+                mButton.setOpaque(false);
+                pathImage = new ImageIcon(String.valueOf(malia.getPath().getPositions().get(i).getSquare().getSquareImage()));
+                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
+                mButton.setIcon(new ImageIcon(scaledPath));
+
+                pButton.setOpaque(false);
+                pButton.setContentAreaFilled(false);
+                pButton.setBorderPainted(false);
+                pathImage = new ImageIcon(String.valueOf(phaistos.getPath().getPositions().get(i).getSquare().getSquareImage()));
+                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
+                pButton.setIcon(new ImageIcon(scaledPath));
+
+                zButton.setOpaque(false);
+                zButton.setContentAreaFilled(false);
+                zButton.setBorderPainted(false);
+                pathImage = new ImageIcon(String.valueOf(zakros.getPath().getPositions().get(i).getSquare().getSquareImage()));
+                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
+                zButton.setIcon(new ImageIcon(scaledPath));
+
+                board.knossosPath.add(kButton);
+                board.maliaPath.add(mButton);
+                board.phaistosPath.add(pButton);
+                board.zakrosPath.add(zButton);
+            }
+        }
+
+        if (player == 1){
+            board.remove(pl2);
+            board.add(pl1);
+        }
+        else{
+            board.remove(pl1);
+            board.add(pl2);
+        }
         isPlaying = true;
         playMusic();
         if (player ==1){

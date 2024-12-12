@@ -19,6 +19,7 @@ public class playerPanel extends JLayeredPane {
     JButton wallPaintings;
     public JPanel lastPlayedCardsPanel;
     public JLabel timerInstance;
+    wallPaintingsWin win = new wallPaintingsWin();
     public playerPanel(Player player) {
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         setLayout(null);
@@ -72,7 +73,7 @@ public class playerPanel extends JLayeredPane {
         wallPaintings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                wallPaintingsWin win = new wallPaintingsWin();
+                win.dispose();
                 win.setTitle("Τοιχογραφίες Παικτη " + player.getName());
                 win.setVisible(true);
             }

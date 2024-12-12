@@ -31,7 +31,12 @@ public class Board extends JFrame {
     public JPanel maliaPath;
     public JPanel phaistosPath;
     public JPanel zakrosPath;
+    public JPanel paths = new JPanel();
+
     public Board() {
+        ImageIcon gameIcon = new ImageIcon("src/assets/images/gameIcon.jpg");
+        setIconImage(gameIcon.getImage());
+
         setTitle("Αναζητώντας τα χαμένα Μινωικά Ανάκτορα");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280,900);
@@ -72,8 +77,10 @@ public class Board extends JFrame {
         stackInfo.setBackground(Color.WHITE);
         stackInfo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         Dashboard.add(stackInfo, JLayeredPane.PALETTE_LAYER);
-
-        knossosPath = new JPanel(new GridLayout(1,9,0, 0));
+        paths.setOpaque(true);
+        paths.setBackground(Color.WHITE);
+        paths.setBounds(340,50,750,400);
+        knossosPath = new JPanel(new GridLayout(1,9,5, 55));
         knossosPath.setOpaque(false);
         knossosPath.setBorder(BorderFactory.createLineBorder(Color.BLACK,5));
         knossosPath.setBounds(340,50,750,100);
@@ -85,6 +92,7 @@ public class Board extends JFrame {
 
         phaistosPath = new JPanel(new GridLayout(1,9,0, 0));
         phaistosPath.setOpaque(false);
+        phaistosPath.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         phaistosPath.setBorder(BorderFactory.createLineBorder(Color.BLACK,5 ));
         phaistosPath.setBounds(340,270,750,100);
 

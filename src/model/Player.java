@@ -44,6 +44,10 @@ public class Player {
      * Represents the music file associated with the player.
      */
     private File music;
+
+    private int checkPoints = 0;
+
+    private Card[] lastPlayedCards = {null, null, null, null};
     /**
      * <b>Constructor</b>: Initializes a Player Object.
      * @param points Total Points of Player
@@ -206,4 +210,20 @@ public class Player {
     public void setName(String name) {
         Name = name;
     }
+
+    public int getCheckPoints() {
+        return checkPoints;
+    }
+
+    public void setCheckPoints(int checkPoints) {
+        this.checkPoints = checkPoints;
+    }
+    public Card[] getLastPlayedCards() {
+        return lastPlayedCards;
+    }
+
+    public void setLastPlayedCards(Card[] lastPlayedCards) {
+        this.lastPlayedCards = lastPlayedCards;
+    }
+
 }

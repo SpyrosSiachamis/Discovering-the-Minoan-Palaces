@@ -1,6 +1,7 @@
 package src.Controller;
 
 import src.View.playerPanel;
+import src.View.wallPaintingsWin;
 import src.model.Player;
 import src.model.cards.Card;
 import src.model.findings.Finding;
@@ -48,7 +49,6 @@ public class Controller {
     private boolean isPlaying = true;
     Board board;
     int player = 0;
-    int checkPoints = 0;
     int disposedCards =0;
 
     /**
@@ -185,7 +185,6 @@ public class Controller {
             player = 2;
             Music = player2.getMusic();
         }
-
     }
 
     /**
@@ -253,12 +252,14 @@ public class Controller {
      */
     public void changeTurn() {
         if (player == 1) {
+            pl1.timerInstance.setText("Χρόνος: 30");
             player = 2;
             board.add(pl2);
             board.remove(pl1);
             Music = player2.getMusic();
         } else {
             player = 1;
+            pl2.timerInstance.setText("Χρόνος: 30");
             board.add(pl1);
             board.remove(pl2);
             Music = player1.getMusic();
@@ -268,16 +269,23 @@ public class Controller {
         playMusic();
     }
 
-    public void updateBoard(){
-        SwingUtilities.invokeLater(() -> {
-            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
-                    "<br> Check Points: " + checkPoints +
-                    "<br> Turn: " + player + "</html>");
-
-            // Force a refresh of the label and board
-            board.revalidate();
-            board.repaint();
-        });
+    public void updateBoard() {
+        if (player == 1) {
+            SwingUtilities.invokeLater(() -> {
+                board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
+                        "<br> Check Points: " + player1.getCheckPoints() +
+                        "<br> Turn: " + player + "</html>");
+            });
+        }
+        else{
+            SwingUtilities.invokeLater(() -> {
+                board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
+                        "<br> Check Points: " + player2.getCheckPoints() +
+                        "<br> Turn: " + player + "</html>");
+            });
+        }
+        board.revalidate();
+        board.repaint();
     }
 
     /**
@@ -329,6 +337,14 @@ public class Controller {
                 }
                 if (i <= 5) {
                     clip.start();
+                }
+                if (player ==1){
+                    pl1.timerInstance.setText("Χρόνος: " + i);
+                    updateBoard();
+                }
+                else{
+                    pl2.timerInstance.setText("Χρόνος: " + i);
+                    updateBoard();
                 }
                 System.out.println(i);
             }
@@ -447,22 +463,33 @@ public class Controller {
         cover.setBounds(0,0,1280,150);
         cover.setLayout(null);
         cover.setBackground(Color.GRAY);
-        if (player == 1){
-            board.remove(pl2);
-            board.add(pl1);
-        }
-        else{
-            board.remove(pl1);
-            board.add(pl2);
-        }
+//        for (int i=0; i<8; i++)
+//        {
+//            board.knossosPath.add(new JLabel(new ImageIcon("src/assets/images/paths/knossos.jpg")));
+//        }
+//        if (player == 1){
+//            board.remove(pl2);
+//            board.add(pl1);
+//        }
+//        else{
+//            board.remove(pl1);
+//            board.add(pl2);
+//        }
         isPlaying = true;
         playMusic();
-        board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ checkPoints +"<br> Turn: "+player+"</html>");
+        if (player ==1){
+            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player1.getCheckPoints() +"<br> Turn: "+player+"</html>");
+        }
+        else{
+            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player2.getCheckPoints() +"<br> Turn: "+player+"</html>");
+
+        }
+
         board.revalidate();
         board.repaint();
     }
     /**
-     * Starts a new game by"Total cards in stack: " +  reinitializing players, selecting the starting player
+     * Starts a new game by" Total cards in stack: " +  reinitializing players, selecting the starting player
      *<p>
      * Pre-condition: None.
      * <p>
@@ -536,6 +563,9 @@ public class Controller {
         else if (disposedCards > 0) {
             System.out.println("Player has already disposed a card");
         }
+        else if (cardStack.isEmpty()){
+            System.out.println("No more available cards");
+        }
         else {
             player.getCards().add(cardStack.pop());
             int lastCardIndex = player.getCards().size() - 1;
@@ -550,7 +580,10 @@ public class Controller {
     }
 
     public void disposeCard(Card c1, Player player, JPanel panel) {
-        if (player.getCards().size() < 8)
+        if (disposedCards == 1){
+            System.out.println("Player has already disposed a card");
+        }
+        else if (player.getCards().size() < 8)
         {
             System.out.println("Less than 8 cards");
             return;

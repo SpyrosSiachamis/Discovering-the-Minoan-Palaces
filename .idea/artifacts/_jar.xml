@@ -2,6 +2,9 @@
   <artifact type="jar" name="ΑναζητώνταςΤαΜινωικάΑνάκτωρα:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/_jar</output-path>
     <root id="archive" name="Project252_2024.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/../ΑναζητώνταςΤαΜινωικάΑνακτορα/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="Project252_2024" />
     </root>
   </artifact>

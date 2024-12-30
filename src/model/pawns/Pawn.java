@@ -2,12 +2,13 @@ package src.model.pawns;
 
 import src.model.positions.Position;
 
+import javax.swing.*;
 import java.awt.*;
 
 public abstract class Pawn {
     private Position position;
-    private Image image;
-
+    private ImageIcon image;
+    private JLabel pawn;
     /**
      * Constructs a new Pawn object with the given Position and Image.
      *
@@ -42,7 +43,8 @@ public abstract class Pawn {
      * @return the Image object of the Pawn.
      */
     public Image getImage() {
-        return image;
+        Image im = image.getImage();
+        return im;
     }
 
     /**
@@ -50,8 +52,18 @@ public abstract class Pawn {
      *
      * @param image The Image object to be set for the Pawn.
      */
-    public void setImage(Image image) {
+    public void setImage(ImageIcon image) {
         this.image = image;
     }
 
+    public JLabel getPawn() {
+        return pawn;
+    }
+
+    public void setPawn(JLabel pawn) {
+        this.pawn = pawn;
+    }
+    public void setPawnImage(ImageIcon image) {
+        pawn.setIcon(image);
+    }
 }

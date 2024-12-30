@@ -2,9 +2,24 @@ package src.model.positions;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class Square{
+    int squareID = 0;
     ImageIcon SquareImage; //The image of the Square object.
+    public JLabel SquareLabel;
+
+
+    public JLabel getSquareLabel() {
+        return SquareLabel;
+    }
+
+    public void setSquareLabel(JLabel squareLabel) {
+        SquareLabel = squareLabel;
+    }
+
     /**
      * <b>Constructor</b>: Constructs a new `Square` object.
      *<p>
@@ -15,6 +30,7 @@ public class Square{
      */
     public Square(ImageIcon squareImage) {
         SquareImage = squareImage;
+        SquareLabel = new JLabel(SquareImage);
     }
 
     /**
@@ -39,5 +55,9 @@ public class Square{
      */
     public void setSquareImage(ImageIcon positionImage) {
         this.SquareImage = positionImage;
+    }
+
+    public void setSquareID(int squareID) {
+        this.squareID = squareID;
     }
 }

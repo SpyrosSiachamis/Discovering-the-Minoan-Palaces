@@ -3,6 +3,7 @@ package src.model.positions;
 import src.model.pawns.Pawn;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 public class Path{
     private ArrayList<Position> path = new ArrayList<Position>();
     private String pathName;
+    boolean hasPawn1 = false;
+    boolean hasPawn2 = false;
     /**
      * <b>Constructor</b>: Constructs a new Path Object.
      * <p>
@@ -32,6 +35,7 @@ public class Path{
      * Precondition: Provided pathName must not be null or empty.
      */
     public Path(String pathName) {
+            Image scaledImage;
             this.pathName = pathName;
             int points = -20;
             for (int i=0; i<9; i++){
@@ -42,19 +46,26 @@ public class Path{
                     points = 30;
                 }
                 if ((i+1) % 2 == 1){
-                    Square pathSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+".jpg"));
+                    ImageIcon ogIm = new ImageIcon("src/assets/images/paths/"+pathName+".jpg");
+                    scaledImage = ogIm.getImage().getScaledInstance(95,80,Image.SCALE_SMOOTH);
+                    Square pathSquare = new Square(new ImageIcon(scaledImage));
                     path.add(new SimplePosition(i,pathName,pathSquare));
                 }
                 if ((i+1)%2 == 0){
-                    Square pathSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+"2.jpg"));
+                    ImageIcon ogIm = new ImageIcon("src/assets/images/paths/"+pathName+"2.jpg");
+                    scaledImage = ogIm.getImage().getScaledInstance(95,80,Image.SCALE_SMOOTH);
+                    Square pathSquare = new Square(new ImageIcon(scaledImage));
                     path.add(new FindingPosition(i,pathName,pathSquare));
                 }
                 path.get(i).setPoints(points);
                 points+=5;
                 if (i==8){
                     points = 50;
-                    Square palaceSquare = new Square(new ImageIcon("src/assets/images/paths/"+pathName+"Palace.jpg"));
+                    ImageIcon ogIm = new ImageIcon("src/assets/images/paths/"+pathName+"Palace.jpg");
+                    scaledImage = ogIm.getImage().getScaledInstance(123,95,Image.SCALE_SMOOTH);
+                    Square palaceSquare = new Square(new ImageIcon(scaledImage));
                     FindingPosition palace = new FindingPosition(i,pathName,palaceSquare);
+                    palace.getSquare().setSquareID(1);
                     palace.setPoints(points);
                     path.add(palace);
                 }
@@ -80,4 +91,20 @@ public class Path{
      * @param pawn The Pawn object to be added to the Path.
      */
     public void addPawn(Pawn pawn){}
+
+    public boolean HasPawn1() {
+        return hasPawn1;
+    }
+
+    public void setHasPawn1(boolean hasPawn1) {
+        this.hasPawn1 = hasPawn1;
+    }
+
+    public boolean HasPawn2() {
+        return hasPawn2;
+    }
+
+    public void setHasPawn2(boolean hasPawn2) {
+        this.hasPawn2 = hasPawn2;
+    }
 }

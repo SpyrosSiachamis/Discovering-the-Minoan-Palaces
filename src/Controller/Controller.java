@@ -1,9 +1,11 @@
 package src.Controller;
 
 import src.View.playerPanel;
-import src.View.wallPaintingsWin;
 import src.model.Player;
+import src.model.cards.Ariadne;
 import src.model.cards.Card;
+import src.model.cards.Minotaur;
+import src.model.cards.NumberCard;
 import src.model.findings.Finding;
 import src.model.pawns.Arch;
 import src.model.pawns.Pawn;
@@ -21,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -48,13 +51,10 @@ public class Controller {
     private Clip clip;
     private boolean isPlaying = true;
     Board board;
-    int player = 0;
+    Player player = null;
     int disposedCards =0;
-    JButton knossosPalace = new JButton();
-    JButton maliaPalace = new JButton();
-    JButton zakrosPalace = new JButton();
-    JButton phaistosPalace = new JButton();
-
+    boolean thrownCard = false;
+    Position[][] positions = new Position[4][9];
     /**
      * Constructs a src.Controller instance and initializes the game state.
      *<p>
@@ -159,13 +159,6 @@ public class Controller {
     private void InitializePlayers() {
         player1 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),new File("src/assets/music/Player1.wav"), "1");
         player2 = new Player(0, new ArrayList<Card>(), new ArrayList<Pawn>(),new File("src/assets/music/Player2.wav"), "2");
-
-        for (int i=0; i<3; i++){
-            player1.getPawns().add(new Arch());
-            player2.getPawns().add(new Arch());
-        }
-        player1.getPawns().add(new Thesseus());
-        player2.getPawns().add(new Thesseus());
     }
 
     /**
@@ -183,11 +176,11 @@ public class Controller {
         int turn;
         turn = rand.nextInt(2);
         if (turn == 0) {
-            player = 1;
-            Music = player1.getMusic();
+            player = player2;
+            Music = player.getMusic();
         } else {
-            player = 2;
-            Music = player2.getMusic();
+            player = player1;
+            Music = player.getMusic();
         }
     }
 
@@ -255,37 +248,64 @@ public class Controller {
      * Invariant: The turn alternates between player1 and player2.
      */
     public void changeTurn() {
-        if (player == 1) {
-            pl1.timerInstance.setText("Χρόνος: 30");
-            player = 2;
-            board.add(pl2);
-            board.remove(pl1);
+        if (player.getName().equals("1")) {
+            // Switch to player 2
+            pl1.timerInstance.setText("Χρόνος: 30"); // Reset timer for player 1
+            board.layeredPathPane.remove(board.getPlayer1Pawns()); // Remove player 1 pawns from pane
+            board.layeredPathPane.add(board.getPlayer2Pawns(), JLayeredPane.MODAL_LAYER); // Add player 2 pawns
+
+            // Update the dashboard components
+            board.remove(pl1); // Remove player 1 panel
+            board.add(pl2); // Add player 2 panel
+
+            // Update player and music
+            player = player2;
             Music = player2.getMusic();
         } else {
-            player = 1;
-            pl2.timerInstance.setText("Χρόνος: 30");
-            board.add(pl1);
-            board.remove(pl2);
+            // Switch to player 1
+            pl2.timerInstance.setText("Χρόνος: 30"); // Reset timer for player 2
+            board.layeredPathPane.remove(board.getPlayer2Pawns()); // Remove player 2 pawns from pane
+            board.layeredPathPane.add(board.getPlayer1Pawns(), JLayeredPane.MODAL_LAYER); // Add player 1 pawns
+
+            // Update the dashboard components
+            board.remove(pl2); // Remove player 2 panel
+            board.add(pl1); // Add player 1 panel
+
+            // Update player and music
+            player = player1;
             Music = player1.getMusic();
         }
-        disposedCards=0;
-        updateBoard();
-        playMusic();
+
+        // Reset game state for the new turn
+        disposedCards = 0;
+        thrownCard = false;
+        updateBoard(); // Refresh the board
+
+        // Handle music playback
+        if (!clip.isRunning()) {
+            System.out.println("Skipping");
+        } else {
+            playMusic();
+        }
+
+        // Refresh the UI to reflect changes
+        board.layeredPathPane.revalidate();
+        board.layeredPathPane.repaint();
     }
 
     public void updateBoard() {
-        if (player == 1) {
+        if (player.getName().equals("1")) {
             SwingUtilities.invokeLater(() -> {
                 board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
                         "<br> Check Points: " + player1.getCheckPoints() +
-                        "<br> Turn: " + player + "</html>");
+                        "<br> Turn: " + player.getName() + "</html>");
             });
         }
         else{
             SwingUtilities.invokeLater(() -> {
                 board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +
                         "<br> Check Points: " + player2.getCheckPoints() +
-                        "<br> Turn: " + player + "</html>");
+                        "<br> Turn: " + player.getName() + "</html>");
             });
         }
         board.revalidate();
@@ -308,54 +328,6 @@ public class Controller {
      */
     public void movePawn(Pawn pawn, Card card, Path path) {
 
-    }
-
-    /**
-     * Runs a countdown timer for the player's turn. If time runs out, the turn
-     * ends.
-     *<p>
-     * Pre-condition: The game must be running.
-     * <p>
-     * Post-condition: The current player's turn ends when the timer reaches 0.
-     * <p>
-     * Invariant: The timer always starts at 30 seconds for each turn.
-     */
-    public void timer() {
-        while (isPlaying) {
-            Clip clip;
-            File countdown = new File("src/assets/music/countdown.wav");
-            try {
-                AudioInputStream m = AudioSystem.getAudioInputStream(countdown);
-                clip = AudioSystem.getClip();
-                clip.open(m);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            int seconds = 30;
-            for (int i = seconds; i >= 0; i--) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    System.err.println(e);
-                    break;
-                }
-                if (i <= 5) {
-                    clip.start();
-                }
-                if (player ==1){
-                    pl1.timerInstance.setText("Χρόνος: " + i);
-                    updateBoard();
-                }
-                else{
-                    pl2.timerInstance.setText("Χρόνος: " + i);
-                    updateBoard();
-                }
-                System.out.println(i);
-            }
-            changeTurn();
-            System.out.println("New Turn!");
-            clip.stop();
-        }
     }
 
     /**
@@ -450,7 +422,6 @@ public class Controller {
         board.setLayout(null);
         initializePalaces();
         InitializePlayers();
-        startingPlayer();
         initializeCards();
         pl1 = new playerPanel(player1);
         pl2 = new playerPanel(player2);
@@ -467,80 +438,35 @@ public class Controller {
         cover.setBounds(0,0,1280,150);
         cover.setLayout(null);
         cover.setBackground(Color.GRAY);
+        board.gbc.weightx = 1.0;
+        board.gbc.weighty = 1.0;
+        for (int i=0;i<4;i++){
+            for (int j=0;j<9;j++){
+                if (i == 0){
+                    positions[i][j] = knossos.getPath().getPositions().get(j);
+                }
+                else if (i == 1){
+                    positions[i][j] = malia.getPath().getPositions().get(j);
+                }
 
-        for (int i=0; i<9; i++)
-        {
-            if (i ==8){
-                knossosPalace.setBounds(1100,55,130,90);
-                maliaPalace.setBounds(1100,165,130,90);
-                phaistosPalace.setBounds(1100,275,130,90);
-                zakrosPalace.setBounds(1100,385,130,90);
-                ImageIcon palaceI = new ImageIcon(String.valueOf(knossos.getPath().getPositions().get(i).getSquare().getSquareImage()));
-                Image scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
-
-                knossosPalace.setIcon(new ImageIcon(scaled));
-                board.Dashboard.add(knossosPalace, JLayeredPane.PALETTE_LAYER);
-
-                palaceI.setImage(new ImageIcon(String.valueOf(malia.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
-                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
-                maliaPalace.setIcon(new ImageIcon(scaled));
-                board.Dashboard.add(maliaPalace, JLayeredPane.PALETTE_LAYER);
-
-                palaceI.setImage(new ImageIcon(String.valueOf(phaistos.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
-                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
-
-                phaistosPalace.setIcon(new ImageIcon(scaled));
-                board.Dashboard.add(phaistosPalace,JLayeredPane.PALETTE_LAYER);
-
-
-                palaceI.setImage(new ImageIcon(String.valueOf(zakros.getPath().getPositions().get(i).getSquare().getSquareImage())).getImage());
-                scaled = palaceI.getImage().getScaledInstance(130,90,Image.SCALE_SMOOTH);
-                zakrosPalace.setIcon(new ImageIcon(scaled));
-                board.Dashboard.add(zakrosPalace, JLayeredPane.PALETTE_LAYER);
-                break;
-            }
-            else {
-                JButton kButton = new JButton();
-                JButton mButton = new JButton();
-                JButton pButton = new JButton();
-                JButton zButton = new JButton();
-
-                kButton.setBorderPainted(false);
-                kButton.setOpaque(false);
-                kButton.setContentAreaFilled(false);
-                ImageIcon pathImage = new ImageIcon(String.valueOf(knossos.getPath().getPositions().get(i).getSquare().getSquareImage()));
-                Image scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
-                kButton.setIcon(new ImageIcon(scaledPath));
-
-                mButton.setContentAreaFilled(false);
-                mButton.setBorderPainted(false);
-                mButton.setOpaque(false);
-                pathImage = new ImageIcon(String.valueOf(malia.getPath().getPositions().get(i).getSquare().getSquareImage()));
-                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
-                mButton.setIcon(new ImageIcon(scaledPath));
-
-                pButton.setOpaque(false);
-                pButton.setContentAreaFilled(false);
-                pButton.setBorderPainted(false);
-                pathImage = new ImageIcon(String.valueOf(phaistos.getPath().getPositions().get(i).getSquare().getSquareImage()));
-                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
-                pButton.setIcon(new ImageIcon(scaledPath));
-
-                zButton.setOpaque(false);
-                zButton.setContentAreaFilled(false);
-                zButton.setBorderPainted(false);
-                pathImage = new ImageIcon(String.valueOf(zakros.getPath().getPositions().get(i).getSquare().getSquareImage()));
-                scaledPath = pathImage.getImage().getScaledInstance(90, 80, Image.SCALE_SMOOTH);
-                zButton.setIcon(new ImageIcon(scaledPath));
-
-                board.knossosPath.add(kButton);
-                board.maliaPath.add(mButton);
-                board.phaistosPath.add(pButton);
-                board.zakrosPath.add(zButton);
+                else if (i == 2){
+                    positions[i][j] = phaistos.getPath().getPositions().get(j);
+                }
+                else if (i == 3){
+                    positions[i][j] = zakros.getPath().getPositions().get(j);
+                }
             }
         }
 
-        if (player == 1){
+        for(int r = 0; r<4; r++) {
+            for (int c = 0; c < 9; c++) {
+                board.gbc.gridx = c; // Column index
+                board.gbc.gridy = r; // Row index
+                JLabel label = positions[r][c].getSquare().getSquareLabel();
+                board.paths.add(label, board.gbc);
+            }
+        }
+        if (player.getName().equals("1")){
             board.remove(pl2);
             board.add(pl1);
         }
@@ -549,18 +475,46 @@ public class Controller {
             board.add(pl2);
         }
         isPlaying = true;
-        playMusic();
-        if (player ==1){
-            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player1.getCheckPoints() +"<br> Turn: "+player+"</html>");
+        if (player.getName().equals("1")){
+            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player1.getCheckPoints() +"<br> Turn: "+player.getName()+"</html>");
         }
         else{
-            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player2.getCheckPoints() +"<br> Turn: "+player+"</html>");
+            board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player2.getCheckPoints() +"<br> Turn: "+player.getName()+"</html>");
 
         }
+        board.mute.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (clip.isRunning()){
+                    stopMusic();
+                    board.mute.setText("Un-mute");
+                }
+                else{
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                    board.mute.setText("Mute");
+                }
 
-        board.revalidate();
-        board.repaint();
+            }
+        });
+        playMusic();
+        updateBoard();
     }
+    class PawnSelectionMenu extends JOptionPane {
+        int choice;
+        String options[];
+        public PawnSelectionMenu(String path, Player plr) {
+            String options[] = {"Arch", "Theseus"};
+            choice = JOptionPane.showOptionDialog(null, "Player "+ plr.getName() +" Select pawn for path " + path + "\nAvailable Archaiologists: " + (3-plr.amountOfArchaeologists()) + "\nTheseus available: " + plr.hasThesseus(), "Pawn Selector", 0,3, null, options, options[0]);
+        }
+        public int getChoice() {
+            return choice;
+        }
+        public void setChoice(int choice) {
+            this.choice = choice;
+        }
+    }
+
     /**
      * Starts a new game by" Total cards in stack: " +  reinitializing players, selecting the starting player
      *<p>
@@ -573,8 +527,14 @@ public class Controller {
     public void startNewGame() throws LineUnavailableException, IOException {
         initializeBoard();
         board.setVisible(true);
+        startingPlayer();
+        if (player.getName().equals("1")){
+            board.layeredPathPane.remove(board.getPlayer2Pawns());
+        }
+        else {
+            board.layeredPathPane.remove(board.getPlayer1Pawns());
+        }
         System.out.println("New Game Started");
-        timer();
     }
 
     /**
@@ -596,38 +556,182 @@ public class Controller {
      * @return true if the conditions for moving the pawn are met; false otherwise.
      */
     public boolean matchCard(Card c1, Card c2) {
-        //TODO: Implement logic that determines card type and the corresponding action.
+        if (c1 instanceof NumberCard){
+            if ( ((NumberCard) c1).getPoints() > ((NumberCard) c2).getPoints()){
+                return true;
+            }
+        }
+        if (c1 instanceof Minotaur){
+            System.out.println("Hello World");
+        }
         return false;
     }
-
     /**
      * Executes the action of throwing the specified card.
-     *<p>
+     * <p>
      * <b>Pre-condition</b>: The card (c1) must be a valid, non-null instance
      * of the Card class that belongs to the current player's hand.
-     *<p>
+     * <p>
      * <b>Post-condition</b>: The specified card (c1) is removed from the player's
      * hand and any game-specific effects associated with throwing the card are
      * triggered.
-     *<p>
+     * <p>
      * <b>Invariant</b>: The method does not alter the fundamental state of the game
      * other than the removal of the card from the player's hand and triggering the
      * card's effects. The game maintains a valid state before and after the method
      * execution.
      *
-     * @param c1 the card to be thrown.
-     * @param pl the player playing.
-     * @param pl2 the opponent player that will have his card checked.
+     * @param pl    the player playing.
+     * @param pl2   the opponent player that will have his card checked.
+     * @param c1    the card to be thrown.
+     * @param panel
      */
-    public void throwCard(Card c1, Player pl, Player pl2){
-        //TODO: Build game mechanic. Method is currently a placeholder and the parameters could be altered.
-        if(c1 != null){
-            if(matchCard(c1, pl2.getCards().get(0))){
-                pl.getCards().remove(c1);
-                pl.getCards().add(cardStack.pop());
+    int locations1[] = {-1,-1,-1,-1};
+    int locations2[] = {-1,-1,-1,-1};
+    int mainloc[];
+    public void throwCard(Card c1, Player player, JPanel panel) {
+        if (thrownCard) {
+            return;
+        } else {
+            String pathName = c1.getPalaceName();
+            board.gbc.gridx = 0;
+            board.gbc.gridy = 0;
+            board.gbc.weightx = 1.0;
+            board.gbc.weighty = 1.0;
+            if (player.getName().equals("1")) {
+                mainloc = locations1;
+            }
+            else {
+                mainloc = locations2;
+            }
+            if (pathName.equals("knossos")) {
+                if (mainloc[0] == -1) {
+                    PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
+                    int choice = select.getChoice();
+                    if (choice == 0) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/arch.jpg"));
+                        Arch arch = new Arch(transpIm);
+                        player.getPawns().add(arch); // Add the new pawn
+                    } else if (choice == 1) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/theseus.jpg"));
+                        Thesseus theseus = new Thesseus(transpIm);
+                        player.getPawns().add(theseus); // Add the new pawn
+                    }
+                    int lastIndex = player.getPawns().size() - 1; // Get the last index of the list
+                    if (player.getName().equals("1")){
+                        board.getPlayer1Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    else {
+                        board.getPlayer2Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    player.getPawns().get(lastIndex).getPawn().setBounds(0, 0, 50, 90);
+                    mainloc[0] = 1;
+                }
+            }
+            else if (pathName.equals("malia")) {
+                if (mainloc[1] == -1) {
+                    PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
+                    int choice = select.getChoice();
+                    if (choice == 0) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/arch.jpg"));
+                        Arch arch = new Arch(transpIm);
+                        player.getPawns().add(arch); // Add the new pawn
+                    }
+                    else if (choice == 1) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/theseus.jpg"));
+                        Thesseus theseus = new Thesseus(transpIm);
+                        player.getPawns().add(theseus); // Add the new pawn
+                    }
+                    int lastIndex = player.getPawns().size() - 1; // Get the last index of the list
+                    if (player.getName().equals("1")){
+                        board.getPlayer1Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    else {
+                        board.getPlayer2Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    player.getPawns().get(lastIndex).getPawn().setBounds(0, 120, 50, 90);
+                    mainloc[1] = 1;
+                }
+            }
+            else if (pathName.equals("phaistos")) {
+                if (mainloc[2] == -1) {
+                    PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
+                    int choice = select.getChoice();
+                    if (choice == 0) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/arch.jpg"));
+                        Arch arch = new Arch(transpIm);
+                        player.getPawns().add(arch); // Add the new pawn
+                    }
+                    else if (choice == 1) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/theseus.jpg"));
+                        Thesseus theseus = new Thesseus(transpIm);
+                        player.getPawns().add(theseus);
+                    }
+                    int lastIndex = player.getPawns().size() - 1;
+                    if (player.getName().equals("1")){
+                        board.getPlayer1Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    else {
+                        board.getPlayer2Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    player.getPawns().get(lastIndex).getPawn().setBounds(0, 240, 50, 90);
+                    mainloc[2] = 1;
+                }
+            }
+            else if (pathName.equals("zakros")) {
+                if (mainloc[3] == -1) {
+                    PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
+                    int choice = select.getChoice();
+                    if (choice == 0) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/arch.jpg"));
+                        Arch arch = new Arch(transpIm);
+                        player.getPawns().add(arch); // Add the new pawn
+                    }
+                    else if (choice == 1) {
+                        ImageIcon transpIm = removeBackground(new ImageIcon("src/assets/images/pionia/theseus.jpg"));
+                        Thesseus theseus = new Thesseus(transpIm);
+                        player.getPawns().add(theseus);
+                    }
+                    int lastIndex = player.getPawns().size() - 1;
+                    if (player.getName().equals("1")){
+                        board.getPlayer1Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    else {
+                        board.getPlayer2Pawns().add(player.getPawns().get(lastIndex).getPawn());
+                    }
+                    player.getPawns().get(lastIndex).getPawn().setBounds(0, 340, 50, 90);
+                    mainloc[3] = 1;
+                }
+            }
+
+            for (int i = 0; i < player.getCards().size(); i++) {
+                if (player.getCards().get(i) == c1) {
+                    player.getCards().remove(i);
+                    System.out.println("Card Disposed");
+                    for (Component component : panel.getComponents()) {
+                        if (component instanceof JButton) {
+                            JButton button = (JButton) component;
+                            Card card = (Card) button.getClientProperty("card");
+                            if (card == c1) {
+                                panel.remove(button);  // Remove the button from the panel
+                                break;
+                            }
+                        }
+                    }
+                    System.out.println("Player's current cards: " + player.getCards().size());
+                    // Revalidate and repaint the panel to reflect the changes
+                    panel.revalidate();
+                    panel.repaint();
+                    thrownCard = true;
+                    if (disposedCards == 1){
+                        changeTurn();
+                    }
+                    updateBoard();
+                }
             }
         }
     }
+
     public void pullCard(Player player, JPanel panel) {
 
         if (player.getCards().size() == 8) {
@@ -649,6 +753,9 @@ public class Controller {
             panel.revalidate();
             panel.repaint();
             updateBoard();
+            if (disposedCards==1){
+                changeTurn();
+            }
         }
     }
 
@@ -714,7 +821,7 @@ public class Controller {
             Card card = (Card) button.getClientProperty("card");
 
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                System.out.println("left click");
+                throwCard(card, player, panel);
             } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
                 disposeCard(card, player, panel);
                 board.repaint();
@@ -725,23 +832,6 @@ public class Controller {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (!(e.getSource() instanceof JButton)) {
-                return;
-            }
-            JButton button = (JButton) e.getSource();
-            Player player = (Player) button.getClientProperty("player");
-            JPanel panel = (JPanel) button.getParent();
-            Card card = (Card) button.getClientProperty("card");
-
-            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                System.out.println("left click");
-            } else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
-                disposeCard(card, player, panel);
-                board.repaint();
-            }
-
-            // Consume the event to prevent propagation
-            e.consume();
         }
 
         @Override
@@ -767,7 +857,7 @@ public class Controller {
                 System.out.println("Not a button");
             } else if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
                 JButton button = (JButton) e.getSource();
-                if (player ==1){
+                if (player.getName().equals("1")){
                     pullCard(player1, pl1.cardsPanel);
                 }
                 else{
@@ -851,6 +941,26 @@ public class Controller {
         else return null;
     }
 
+    public ImageIcon removeBackground(ImageIcon pawn) {
+        Image image;
+        image = pawn.getImage();
+        BufferedImage buffIm = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = buffIm.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        Color bgColor = new Color(255, 255, 255);
+        int bgRGB = bgColor.getRGB();
+        for (int i = 0; i < buffIm.getWidth(); i++) {
+            for (int j = 0; j < buffIm.getHeight(); j++) {
+                if (buffIm.getRGB(i, j) == bgRGB) {
+                    buffIm.setRGB(i, j, 0x00FFFFFF);
+                }
+            }
+        }
+        ImageIcon transparentPawnIm = new ImageIcon(buffIm);
+        return transparentPawnIm;
+    }
+
     /**
      * The main method serves as the entry point for the application, initializing
      * and starting a new game session.
@@ -874,4 +984,64 @@ public class Controller {
         Controller controller = new Controller();
         controller.startNewGame();
     }
+
+    class timer{
+        int seconds = 30;
+        private Thread timerThread;
+        public timer() {}
+        public void startTimer() {
+            stopTimer();
+            isPlaying = true;
+            seconds = 30;
+
+            // Create a new thread for the timer
+            timerThread = new Thread(() -> {
+                while (isPlaying && seconds >= 0) {
+                    try {
+                        if (seconds <= 5) {
+                            clip.start();
+                        }
+                        int timeRemaining = seconds; // Capture variable for lambda expression
+                        SwingUtilities.invokeLater(() -> {
+                            if (player.getName().equals("1")) {
+                                pl1.timerInstance.setText("Χρόνος: " + timeRemaining);
+                            } else {
+                                pl2.timerInstance.setText("Χρόνος: " + timeRemaining);
+                            }
+                            updateBoard();
+                        });
+
+                        System.out.println(seconds);
+                        Thread.sleep(1000);
+                        seconds--;
+                    } catch (InterruptedException e) {
+                        System.err.println(e);
+                        break;
+                    }
+                }
+
+                // Change turn when timer finishes
+                if (seconds < 0) {
+                    changeTurn();
+                    System.out.println("New Turn!");
+                }
+            });
+
+            timerThread.start(); // Start the timer thread
+        }
+        public void resetTimer(){
+            stopTimer();
+            seconds = 30;
+            startTimer();
+
+        }
+
+        private void stopTimer() {
+            isPlaying = false;
+        }
+    }
 }
+
+
+
+

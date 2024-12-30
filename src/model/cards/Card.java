@@ -7,7 +7,7 @@ public abstract class Card {
     private ImageIcon minImage;
     private String Palace;
     private JButton cardButton;
-
+    private int value;
     /**
      * <b>Constructor</b>: Constructs a new `Card` object.
      * <p>

@@ -144,10 +144,10 @@ public class Player {
     public int hasThesseus(){
         for (int i=0; i<pawns.size(); i++){
             if (pawns.get(i) instanceof Thesseus){
-                return 1;
+                return 0;
             }
         }
-        return 0;
+        return 1;
     }
 
     /**

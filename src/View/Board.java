@@ -23,7 +23,7 @@ public class Board extends JFrame {
     public JMenuItem Save;
     public JMenuItem Continue;
     public JMenuItem Exit;
-    public JMenuItem mute;
+    public JMenuItem mute = new JMenuItem("Mute Music");;
     public JLayeredPane Dashboard;
     public JButton cardStackBut;
     public JLabel stackInfo;
@@ -31,7 +31,11 @@ public class Board extends JFrame {
     public JPanel maliaPath;
     public JPanel phaistosPath;
     public JPanel zakrosPath;
-    public JPanel paths = new JPanel();
+    public JLayeredPane layeredPathPane = new JLayeredPane();
+    public JPanel paths = new JPanel(new GridBagLayout());
+    JPanel player1Pawns = new JPanel(null);
+    JPanel player2Pawns = new JPanel(null);
+    public GridBagConstraints gbc = new GridBagConstraints();
     public Board() {
         ImageIcon gameIcon = new ImageIcon("src/assets/images/gameIcon.jpg");
         setIconImage(gameIcon.getImage());
@@ -45,10 +49,23 @@ public class Board extends JFrame {
         setJMenuBar(menuBar);
 
         JMenuItem newGame = new JMenuItem("New Game");
+        newGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         JMenuItem save = new JMenuItem("Save Game");
         JMenuItem cont = new JMenuItem("Continue Saved Game");
-        JMenuItem mute = new JMenuItem("Mute Music");
+
         JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Exiting Game");
+                System.exit(0);
+            }
+        });
         menuBar.add(newGame);
         menuBar.add(save);
         menuBar.add(cont);
@@ -76,32 +93,69 @@ public class Board extends JFrame {
         stackInfo.setBackground(Color.WHITE);
         stackInfo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         Dashboard.add(stackInfo, JLayeredPane.PALETTE_LAYER);
-        paths.setOpaque(true);
-        paths.setBackground(Color.WHITE);
-        paths.setBounds(340,50,750,400);
+        JPanel pathInfo = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1.3;
+        c.weighty = 1.3;
+        pathInfo.setOpaque(false);
+        pathInfo.setBounds(330, 20, 900, 40);
 
-        knossosPath = new JPanel(new GridLayout(1,8,5, 55));
-        knossosPath.setOpaque(false);
-        knossosPath.setBounds(340,50,750,100);
-
-        maliaPath = new JPanel(new GridLayout(1,8,0, 0));
-        maliaPath.setOpaque(false);
-        maliaPath.setBounds(340,160,750,100);
-
-        phaistosPath = new JPanel(new GridLayout(1,8,0, 0));
-        phaistosPath.setOpaque(false);
-        phaistosPath.setBounds(340,270,750,100);
-
-        zakrosPath = new JPanel(new GridLayout(1,8,0, 0));
-        zakrosPath.setOpaque(false);
-        zakrosPath.setBounds(340,380,750,100);
-
-
-        Dashboard.add(knossosPath, JLayeredPane.PALETTE_LAYER);
-        Dashboard.add(maliaPath, JLayeredPane.PALETTE_LAYER);
-        Dashboard.add(phaistosPath, JLayeredPane.PALETTE_LAYER);
-        Dashboard.add(zakrosPath, JLayeredPane.PALETTE_LAYER);
+        JLabel m20 = new JLabel("-20 points  ");
+        m20.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(m20, c);
+        JLabel m15 = new JLabel("-15 points  ");
+        m15.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(m15, c);
+        JLabel m10 = new JLabel("-10 points  ");
+        m10.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(m10,c);
+        JLabel p5 = new JLabel("5 points  ");
+        p5.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(p5,c);
+        JLabel p10 = new JLabel("10 points  ");
+        p10.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(p10,c);
+        JLabel p15= new JLabel("15 points  ");
+        p15.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(p15,c);
+        JLabel p30= new JLabel("<html>30 points<br>Check Point!</html>  ");
+        p30.setFont(new Font("Serif", Font.BOLD, 13));
+        pathInfo.add(p30,c);
+        JLabel p35 = new JLabel("35 points  ");
+        p35.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(p35,c);
+        JLabel p50= new JLabel("50 points  ");
+        p50.setFont(new Font("Serif", Font.BOLD, 17));
+        pathInfo.add(p50,c);
+        layeredPathPane.setBounds(330,50,930,440);
+        player1Pawns.setBounds(0,0,930,440);
+        player1Pawns.setOpaque(false);
+        player2Pawns.setOpaque(false);
+        player2Pawns.setBounds(0,0,930,440);
+        paths.setOpaque(false);
+        paths.setBounds(0,0,930,440);
+        layeredPathPane.add(paths,JLayeredPane.DEFAULT_LAYER);
+        layeredPathPane.add(player1Pawns, JLayeredPane.PALETTE_LAYER);
+        layeredPathPane.add(player2Pawns, JLayeredPane.MODAL_LAYER);
+        Dashboard.add(layeredPathPane, JLayeredPane.PALETTE_LAYER);
+        Dashboard.add(pathInfo, JLayeredPane.PALETTE_LAYER);
         add(Dashboard);
         setResizable(false);
+    }
+
+    public JPanel getPlayer2Pawns() {
+        return player2Pawns;
+    }
+
+    public void setPlayer2Pawns(JPanel player2Pawns) {
+        this.player2Pawns = player2Pawns;
+    }
+
+    public JPanel getPlayer1Pawns() {
+        return player1Pawns;
+    }
+
+    public void setPlayer1Pawns(JPanel player1Pawns) {
+        this.player1Pawns = player1Pawns;
     }
 }

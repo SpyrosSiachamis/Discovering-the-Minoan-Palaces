@@ -7,10 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Square{
-    int squareID = 0;
     ImageIcon SquareImage; //The image of the Square object.
     public JLabel SquareLabel;
-
+    private MouseListener mouseListener;
 
     public JLabel getSquareLabel() {
         return SquareLabel;
@@ -31,6 +30,7 @@ public class Square{
     public Square(ImageIcon squareImage) {
         SquareImage = squareImage;
         SquareLabel = new JLabel(SquareImage);
+        SquareLabel.addMouseListener(mouseListener);
     }
 
     /**
@@ -56,8 +56,11 @@ public class Square{
     public void setSquareImage(ImageIcon positionImage) {
         this.SquareImage = positionImage;
     }
+    public MouseListener getMouseListener() {
+        return mouseListener;
+    }
 
-    public void setSquareID(int squareID) {
-        this.squareID = squareID;
+    public void setMouseListener(MouseListener mouseListener) {
+        SquareLabel.addMouseListener(mouseListener);
     }
 }

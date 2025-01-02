@@ -65,7 +65,6 @@ public class Path{
                     scaledImage = ogIm.getImage().getScaledInstance(123,95,Image.SCALE_SMOOTH);
                     Square palaceSquare = new Square(new ImageIcon(scaledImage));
                     FindingPosition palace = new FindingPosition(i,pathName,palaceSquare);
-                    palace.getSquare().setSquareID(1);
                     palace.setPoints(points);
                     path.add(palace);
                 }

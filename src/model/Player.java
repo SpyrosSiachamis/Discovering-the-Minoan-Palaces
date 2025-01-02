@@ -24,7 +24,7 @@ public class Player {
      * Each finding is represented as an instance of the Finding class, which includes
      * details such as points, image, and name.
      */
-    private ArrayList<Finding> finds;
+    private ArrayList<Finding> finds = new ArrayList<>();
     /**
      * Represents the collection of cards held by the player.
      * This field is a list of Card objects that are associated with the player.
@@ -44,7 +44,7 @@ public class Player {
      * Represents the music file associated with the player.
      */
     private File music;
-
+    private int amountOfStatues = 0;
     private int checkPoints = 0;
 
     private Card[] lastPlayedCards = {null, null, null, null};
@@ -226,4 +226,15 @@ public class Player {
         this.lastPlayedCards = lastPlayedCards;
     }
 
+    public boolean isHasWon() {
+        return hasWon;
+    }
+
+    public int getAmountOfStatues() {
+        return amountOfStatues;
+    }
+
+    public void setAmountOfStatues(int amountOfStatues) {
+        this.amountOfStatues = amountOfStatues;
+    }
 }

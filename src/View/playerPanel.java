@@ -11,12 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 public class playerPanel extends JLayeredPane {
+    Player plr;
     JPanel panel;
     public JLabel playerStats;
     public JPanel cardsPanel;
     JPanel score;
     public int playerScore =0;
     public JLabel statues;
+    public int amountStats;
     JButton wallPaintings;
     public JPanel lastPlayedCardsPanel;
     public JLabel timerInstance;
@@ -26,10 +28,9 @@ public class playerPanel extends JLayeredPane {
     public JLabel kosmima;
     public JLabel ruto;
 
-
-
-
     public playerPanel(Player player) {
+        this.plr = player;
+        this.statues = new JLabel();
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         setLayout(null);
         setSize(1280,150);
@@ -114,8 +115,7 @@ public class playerPanel extends JLayeredPane {
             }
         });
         score.add(wallPaintings);
-
-        JLabel statues = new JLabel("Αγαλματάκια: 0");
+        JLabel statues = new JLabel("Αγαλματάκια: " + amountStats);
         statues.setBorder(BorderFactory.createEmptyBorder(0,0,0,10));
         score.add(statues);
         ImageIcon originalImage = new ImageIcon("src/assets/images/findings/snakes.jpg");
@@ -131,5 +131,121 @@ public class playerPanel extends JLayeredPane {
         add(panel, JLayeredPane.DEFAULT_LAYER);
         add(cardsPanel, JLayeredPane.PALETTE_LAYER);
         add(score, JLayeredPane.PALETTE_LAYER);
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    public void setPanel(JPanel panel) {
+        this.panel = panel;
+    }
+
+    public JLabel getPlayerStats() {
+        return playerStats;
+    }
+
+    public void setPlayerStats(JLabel playerStats) {
+        this.playerStats = playerStats;
+    }
+
+    public JPanel getCardsPanel() {
+        return cardsPanel;
+    }
+
+    public void setCardsPanel(JPanel cardsPanel) {
+        this.cardsPanel = cardsPanel;
+    }
+
+    public JPanel getScore() {
+        return score;
+    }
+
+    public void setScore(JPanel score) {
+        this.score = score;
+    }
+
+    public int getPlayerScore() {
+        return playerScore;
+    }
+
+    public void setPlayerScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
+    public JLabel getStatues() {
+        return statues;
+    }
+
+    public void setStatues() {
+        this.statues.setText("Αγαλματάκια: " + plr.getAmountOfStatues());
+        this.statues.revalidate();
+        this.statues.repaint();
+        this.score.revalidate();
+        this.score.repaint();
+    }
+
+    public JButton getWallPaintings() {
+        return wallPaintings;
+    }
+
+    public void setWallPaintings(JButton wallPaintings) {
+        this.wallPaintings = wallPaintings;
+    }
+
+    public JPanel getLastPlayedCardsPanel() {
+        return lastPlayedCardsPanel;
+    }
+
+    public void setLastPlayedCardsPanel(JPanel lastPlayedCardsPanel) {
+        this.lastPlayedCardsPanel = lastPlayedCardsPanel;
+    }
+
+    public JLabel getTimerInstance() {
+        return timerInstance;
+    }
+
+    public void setTimerInstance(JLabel timerInstance) {
+        this.timerInstance = timerInstance;
+    }
+
+    public wallPaintingsWin getWin() {
+        return win;
+    }
+
+    public void setWin(wallPaintingsWin win) {
+        this.win = win;
+    }
+
+    public JLabel getDiskos() {
+        return diskos;
+    }
+
+    public void setDiskos(JLabel diskos) {
+        this.diskos = diskos;
+    }
+
+    public JLabel getRing() {
+        return ring;
+    }
+
+    public void setRing(JLabel ring) {
+        this.ring = ring;
+    }
+
+    public JLabel getKosmima() {
+        return kosmima;
+    }
+
+    public void setKosmima(JLabel kosmima) {
+        this.kosmima = kosmima;
+    }
+
+    public JLabel getRuto() {
+        return ruto;
+    }
+
+    public void setRuto(JLabel ruto) {
+        this.ruto = ruto;
     }
 }

@@ -9,6 +9,7 @@ public abstract class Pawn {
     private Position position;
     private ImageIcon image;
     private JLabel pawn;
+    GridBagConstraints location;
     /**
      * Constructs a new Pawn object with the given Position and Image.
      *

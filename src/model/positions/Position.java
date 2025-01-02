@@ -1,5 +1,7 @@
 package src.model.positions;
 
+import java.awt.event.MouseListener;
+
 public abstract class Position {
     private int x;
     private String path;
@@ -81,4 +83,5 @@ public abstract class Position {
     public void setSquare(Square square) {
         this.square = square;
     }
+
 }

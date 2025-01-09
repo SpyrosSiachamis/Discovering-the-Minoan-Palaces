@@ -237,4 +237,5 @@ public class Player {
     public void setAmountOfStatues(int amountOfStatues) {
         this.amountOfStatues = amountOfStatues;
     }
+
 }

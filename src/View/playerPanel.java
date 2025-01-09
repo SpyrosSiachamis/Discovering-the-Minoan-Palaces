@@ -27,6 +27,10 @@ public class playerPanel extends JLayeredPane {
     public JLabel ring;
     public JLabel kosmima;
     public JLabel ruto;
+    JLabel knossosC = new JLabel();
+    JLabel maliaC = new JLabel();
+    JLabel phaistosC = new JLabel();
+    JLabel zakrosC = new JLabel();
 
     public playerPanel(Player player) {
         this.plr = player;
@@ -53,19 +57,19 @@ public class playerPanel extends JLayeredPane {
         lastPlayedCardsPanel = new JPanel(null);
         lastPlayedCardsPanel.setBounds(660,15,320,130);
 
-        JLabel knossosC = new JLabel("Κνωσσός", SwingConstants.CENTER);
+        knossosC = new JLabel("Κνωσσός", SwingConstants.CENTER);
         knossosC.setBounds(3,0,67,95);
         knossosC.setBorder(BorderFactory.createLineBorder(Color.RED,3));
 
-        JLabel maliaC = new JLabel("Μάλια", SwingConstants.CENTER);
+        maliaC = new JLabel("Μάλια", SwingConstants.CENTER);
         maliaC.setBounds(83,0,67,95);
         maliaC.setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
 
-        JLabel phaistosC = new JLabel("Φαιστός", SwingConstants.CENTER);
+        phaistosC = new JLabel("Φαιστός", SwingConstants.CENTER);
         phaistosC.setBounds(166,0,67,95);
         phaistosC.setBorder(BorderFactory.createLineBorder(Color.BLACK,3));
 
-        JLabel zakrosC = new JLabel("Ζάκρος", SwingConstants.CENTER);
+        zakrosC = new JLabel("Ζάκρος", SwingConstants.CENTER);
         zakrosC.setBounds(249,0,67,95);
         zakrosC.setBorder(BorderFactory.createLineBorder(Color.BLUE,3));
 
@@ -247,5 +251,37 @@ public class playerPanel extends JLayeredPane {
 
     public void setRuto(JLabel ruto) {
         this.ruto = ruto;
+    }
+
+    public JLabel getZakrosC() {
+        return zakrosC;
+    }
+
+    public void setZakrosC(JLabel zakrosC) {
+        this.zakrosC = zakrosC;
+    }
+
+    public JLabel getPhaistosC() {
+        return phaistosC;
+    }
+
+    public void setPhaistosC(JLabel phaistosC) {
+        this.phaistosC = phaistosC;
+    }
+
+    public JLabel getMaliaC() {
+        return maliaC;
+    }
+
+    public void setMaliaC(JLabel maliaC) {
+        this.maliaC = maliaC;
+    }
+
+    public JLabel getKnossosC() {
+        return knossosC;
+    }
+
+    public void setKnossosC(JLabel knossosC) {
+        this.knossosC = knossosC;
     }
 }

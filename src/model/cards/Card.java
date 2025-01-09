@@ -35,7 +35,9 @@ public abstract class Card {
      * @return The ImageIcon representing the image of the card.
      */
     public ImageIcon getImage() {
-        return minImage;
+        ImageIcon originalIcon = minImage;
+        Image scaled = originalIcon.getImage().getScaledInstance(75,95,Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
     }
 
     /**
@@ -46,6 +48,7 @@ public abstract class Card {
      * Precondition: `minImage` input should be a non-null ImageIcon.
      */
     public void setImage(ImageIcon minImage) {
+
         this.minImage = minImage;
     }
 

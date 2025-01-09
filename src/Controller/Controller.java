@@ -441,20 +441,12 @@ public class Controller {
         cardStack.addAll(malia.getSpCards());
         cardStack.addAll(zakros.getSpCards());
         cardStack.addAll(phaistos.getSpCards());
-
         Collections.shuffle(cardStack);
         for (int i=0;i<8;i++){
             player1.getCards().add(cardStack.pop());
-
-            player1.getCards().get(i).getCardButton().putClientProperty("player", player1); // Associate the card with player1
-
+            player1.getCards().get(i).getCardButton().putClientProperty("player", player1);
             player2.getCards().add(cardStack.pop());
             player2.getCards().get(i).getCardButton().putClientProperty("player", player2);
-        }
-        System.out.println(cardStack.size());
-        System.out.println("Player 1 cards: ");
-        for (int i=0; i<8; i++){
-            System.out.println(player1.getCards().get(i).toString());
         }
     }
 
@@ -613,6 +605,42 @@ public class Controller {
         if (c1 instanceof NumberCard){
             if ( ((NumberCard) c1).getPoints() > ((NumberCard) c2).getPoints()){
                 player.getPawns().get(i).getPawn().setBounds(player.getPawns().get(i).getPawn().getBounds().x + 100,player.getPawns().get(i).getPawn().getBounds().y,player.getPawns().get(i).getPawn().getBounds().width, player.getPawns().get(i).getPawn().getBounds().height);
+                if (c1.getPalaceName().equals("knossos")) {
+                    player.getLastPlayedCards()[0] = c1;
+                    if (player.getName().equals("1")){
+                        pl1.getKnossosC().setIcon(c1.getImage());
+                    }
+                    else {
+                        pl2.getKnossosC().setIcon(c1.getImage());
+                    }
+                }
+                else if (c1.getPalaceName().equals("malia")) {
+                    player.getLastPlayedCards()[1] = c1;
+                    if (player.getName().equals("1")){
+                        pl1.getMaliaC().setIcon(c1.getImage());
+                    }
+                    else {
+                        pl2.getMaliaC().setIcon(c1.getImage());
+                    }
+                }
+                else if (c1.getPalaceName().equals("phaistos")) {
+                    player.getLastPlayedCards()[2] = c1;
+                    if (player.getName().equals("1")){
+                        pl1.getPhaistosC().setIcon(c1.getImage());
+                    }
+                    else {
+                        pl2.getPhaistosC().setIcon(c1.getImage());
+                    }
+                }
+                else if (c1.getPalaceName().equals("zakros")) {
+                    player.getLastPlayedCards()[3] = c1;
+                    if (player.getName().equals("1")){
+                        pl1.getZakrosC().setIcon(c1.getImage());
+                    }
+                    else {
+                        pl2.getZakrosC().setIcon(c1.getImage());
+                    }
+                }
             }
         }
         if (c1 instanceof Minotaur){
@@ -648,10 +676,6 @@ public class Controller {
             return;
         } else {
             String pathName = c1.getPalaceName();
-            board.gbc.gridx = 0;
-            board.gbc.gridy = 0;
-            board.gbc.weightx = 1.0;
-            board.gbc.weighty = 1.0;
             if (pathName.equals("knossos")) {
                 if (player.getName().equals("1")) {
                     hasPawn = knossos.getPath().HasPawn1();
@@ -691,12 +715,18 @@ public class Controller {
                             }
                             player.getPawns().get(0).getPawn().setBounds(0, 0, 50, 90);
                             player.getLastPlayedCards()[0] = c1;
+                            if (player.getName().equals("1")) {
+                                pl1.getKnossosC().setIcon(c1.getImage());
+                            }
+                            else {
+                                pl2.getKnossosC().setIcon(c1.getImage());
+                            }
                             updateBoard();
                             panel.repaint();
                             panel.revalidate();
                         }
                         for (int i = 0; i < player.getCards().size(); i++) {
-                            if (player.getCards().get(i) == c1) {
+                            if (player.getCards().get(i).equals(c1)) {
                                 player.getCards().remove(i);
                                 System.out.println("Card Disposed");
                                 for (Component component : panel.getComponents()) {
@@ -734,73 +764,78 @@ public class Controller {
                     } else {
                         matchCard(c1, player.getLastPlayedCards()[0], 0);
                     }
-                }
-            } else if (malia.getPath().HasPawn2() && player.getName().equals("2")) {
-                if (pawnLocs2[1] instanceof Thesseus) {
-                    matchCard(c1, player.getLastPlayedCards()[1], 3);
-                } else {
-                    matchCard(c1, player.getLastPlayedCards()[1], 1);
-                }
-            } else {
-                if (c1 instanceof SpecialCard) {
-                    System.out.println("Cannot Start Path with Special Card.");
-                } else {
-                    if (player.getName().equals("1")) {
-                        hasPawn = malia.getPath().HasPawn1();
+                } else if (malia.getPath().HasPawn2() && player.getName().equals("2")) {
+                    if (pawnLocs2[1] instanceof Thesseus) {
+                        matchCard(c1, player.getLastPlayedCards()[1], 3);
                     } else {
-                        hasPawn = malia.getPath().HasPawn2();
+                        matchCard(c1, player.getLastPlayedCards()[1], 1);
                     }
-                    if (!hasPawn) {
-                        PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
-                        int choice = select.getChoice();
+                } else {
+                    if (c1 instanceof SpecialCard) {
+                        System.out.println("Cannot Start Path with Special Card.");
+                    } else {
                         if (player.getName().equals("1")) {
-                            malia.getPath().setHasPawn1(true);
+                            hasPawn = malia.getPath().HasPawn1();
                         } else {
-                            malia.getPath().setHasPawn2(true);
+                            hasPawn = malia.getPath().HasPawn2();
                         }
-                        if (player.getName().equals("1") && choice == 0) {
-                            board.getPlayer1Pawns().add(player.getPawns().get(1).getPawn());
-                            pawnLocs1[1] = player.getPawns().get(1);
-                            pawnLocs1[1].getPawn().setBounds(0, 240, 50, 90);
-                        } else if (player.getName().equals("2") && choice == 0) {
-                            board.getPlayer2Pawns().add(player.getPawns().get(3).getPawn());
-                            pawnLocs2[1] = player.getPawns().get(1);
-                            pawnLocs2[1].getPawn().setBounds(0, 240, 50, 90);
-                        } else if (player.getName().equals("1") && choice == 1)
-                            player.getPawns().get(3).getPawn().setBounds(0, 120, 50, 90);
-                        player.getLastPlayedCards()[1] = c1;
-                        updateBoard();
-                        panel.repaint();
-                        panel.revalidate();
-                    }
-                    for (int i = 0; i < player.getCards().size(); i++) {
-                        if (player.getCards().get(i) == c1) {
-                            player.getCards().remove(i);
-                            System.out.println("Card Disposed");
-                            for (Component component : panel.getComponents()) {
-                                if (component instanceof JButton) {
-                                    JButton button = (JButton) component;
-                                    Card card = (Card) button.getClientProperty("card");
-                                    if (card == c1) {
-                                        panel.remove(button);  // Remove the button from the panel
-                                        break;
-                                    }
-                                }
+                        if (!hasPawn) {
+                            PawnSelectionMenu select = new PawnSelectionMenu(c1.getPalaceName(), player);
+                            int choice = select.getChoice();
+                            if (player.getName().equals("1")) {
+                                malia.getPath().setHasPawn1(true);
+                            } else {
+                                malia.getPath().setHasPawn2(true);
                             }
-                            System.out.println("Player's current cards: " + player.getCards().size());
-                            thrownCard = true;
-                            if (disposedCards == 1) {
-                                changeTurn();
+                            if (player.getName().equals("1") && choice == 0) {
+                                board.getPlayer1Pawns().add(player.getPawns().get(1).getPawn());
+                                pawnLocs1[1] = player.getPawns().get(1);
+                                pawnLocs1[1].getPawn().setBounds(0, 240, 50, 90);
+                            } else if (player.getName().equals("2") && choice == 0) {
+                                board.getPlayer2Pawns().add(player.getPawns().get(3).getPawn());
+                                pawnLocs2[1] = player.getPawns().get(1);
+                                pawnLocs2[1].getPawn().setBounds(0, 240, 50, 90);
+                            } else if (player.getName().equals("1") && choice == 1)
+                                player.getPawns().get(3).getPawn().setBounds(0, 120, 50, 90);
+                            player.getLastPlayedCards()[1] = c1;
+                            if (player.getName().equals("1")) {
+                                pl1.getMaliaC().setIcon(c1.getImage());
+                            }
+                            else {
+                                pl2.getMaliaC().setIcon(c1.getImage());
                             }
                             updateBoard();
-                            panel.revalidate();
                             panel.repaint();
+                            panel.revalidate();
+                        }
+                        for (int i = 0; i < player.getCards().size(); i++) {
+                            if (player.getCards().get(i).equals(c1)) {
+                                player.getCards().remove(i);
+                                System.out.println("Card Disposed");
+                                for (Component component : panel.getComponents()) {
+                                    if (component instanceof JButton) {
+                                        JButton button = (JButton) component;
+                                        Card card = (Card) button.getClientProperty("card");
+                                        if (card == c1) {
+                                            panel.remove(button);  // Remove the button from the panel
+                                            break;
+                                        }
+                                    }
+                                }
+                                System.out.println("Player's current cards: " + player.getCards().size());
+                                thrownCard = true;
+                                if (disposedCards == 1) {
+                                    changeTurn();
+                                }
+                                updateBoard();
+                                panel.revalidate();
+                                panel.repaint();
+                            }
                         }
                     }
                 }
             }
-        }
-    else if (pathName.equals("phaistos")) {
+            else if (pathName.equals("phaistos")) {
                 if (phaistos.getPath().HasPawn1() && player.getName().equals("1")) {
                     matchCard(c1, player.getLastPlayedCards()[2], 2);
                 } else if (phaistos.getPath().HasPawn2() && player.getName().equals("2")) {
@@ -811,8 +846,7 @@ public class Controller {
                     } else {
                         if (player.getName().equals("1")) {
                             hasPawn = phaistos.getPath().HasPawn1();
-                        }
-                        else {
+                        } else {
                             hasPawn = phaistos.getPath().HasPawn2();
                         }
                         if (!hasPawn) {
@@ -833,12 +867,18 @@ public class Controller {
                                 pawnLocs2[2].getPawn().setBounds(0, 240, 50, 90);
                             }
                             player.getLastPlayedCards()[2] = c1;
+                            if (player.getName().equals("1")) {
+                                pl1.getPhaistosC().setIcon(c1.getImage());
+                            }
+                            else {
+                                pl2.getPhaistosC().setIcon(c1.getImage());
+                            }
                             updateBoard();
                             panel.repaint();
                             panel.revalidate();
                         }
                         for (int i = 0; i < player.getCards().size(); i++) {
-                            if (player.getCards().get(i) == c1) {
+                            if (player.getCards().get(i).equals(c1)) {
                                 player.getCards().remove(i);
                                 System.out.println("Card Disposed");
                                 for (Component component : panel.getComponents()) {
@@ -874,8 +914,7 @@ public class Controller {
                     } else {
                         if (player.getName().equals("1")) {
                             hasPawn = zakros.getPath().HasPawn1();
-                        }
-                        else {
+                        } else {
                             hasPawn = zakros.getPath().HasPawn2();
                         }
                         if (!hasPawn) {
@@ -895,12 +934,18 @@ public class Controller {
                                 pawnLocs2[3].getPawn().setBounds(0, 240, 50, 90);
                             }
                             player.getLastPlayedCards()[3] = c1;
+                            if (player.getName().equals("1")) {
+                                pl1.getZakrosC().setIcon(c1.getImage());
+                            }
+                            else {
+                                pl2.getZakrosC().setIcon(c1.getImage());
+                            }
                             updateBoard();
                             panel.repaint();
                             panel.revalidate();
                         }
                         for (int i = 0; i < player.getCards().size(); i++) {
-                            if (player.getCards().get(i) == c1) {
+                            if (player.getCards().get(i).equals(c1)) {
                                 player.getCards().remove(i);
                                 System.out.println("Card Disposed");
                                 for (Component component : panel.getComponents()) {

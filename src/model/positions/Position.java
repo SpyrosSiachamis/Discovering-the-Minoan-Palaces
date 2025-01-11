@@ -7,7 +7,7 @@ public abstract class Position {
     private String path;
     private int points;
     private Square square;
-
+    private boolean hasPawn = false;
     /**
      * Represents a position with an x-coordinate and a path associated with it.
      *
@@ -19,6 +19,10 @@ public abstract class Position {
         this.path = path;
         this.points = 0;
         this.square = square;
+    }
+
+    public Position() {
+
     }
 
     /**
@@ -84,4 +88,12 @@ public abstract class Position {
         this.square = square;
     }
 
+
+    public boolean HasPawn() {
+        return hasPawn;
+    }
+
+    public void setHasPawn(boolean hasPawn) {
+        this.hasPawn = hasPawn;
+    }
 }

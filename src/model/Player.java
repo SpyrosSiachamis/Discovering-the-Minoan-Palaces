@@ -238,4 +238,6 @@ public class Player {
         this.amountOfStatues = amountOfStatues;
     }
 
+
+
 }

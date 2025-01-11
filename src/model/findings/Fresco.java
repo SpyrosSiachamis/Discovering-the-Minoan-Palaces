@@ -1,6 +1,7 @@
 package src.model.findings;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Represents a Fresco, which is a type of Archaeological Finding extending the Finding class.
@@ -21,5 +22,16 @@ public class Fresco extends Finding{
      */
     public Fresco(int points, ImageIcon findingImage, String findingName) {
         super(points, findingImage, findingName);
+    }
+
+    public JLabel getFrescoImage() {
+        JLabel frescoImage = new JLabel();
+        int x;
+        int y;
+        x = getFindingImage().getImage().getWidth(null);
+        y = getFindingImage().getImage().getHeight(null);
+        Image scaledImage = getFindingImage().getImage().getScaledInstance(x/3, y/3, Image.SCALE_SMOOTH);
+        frescoImage.setIcon(new ImageIcon(scaledImage));
+        return frescoImage;
     }
 }

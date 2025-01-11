@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class FindingPosition extends SimplePosition{
     private Finding find; // Finding object associated with the FindingPosition
-
     /**
      * Initializes a FindingPosition object with the given x-coordinate, Path object, points value, Square object, and Finding object.
      *

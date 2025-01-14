@@ -10,6 +10,7 @@ public abstract class Pawn {
     private ImageIcon image;
     private JLabel pawn;
     int x,y;
+    String palace;
     GridBagConstraints location;
     /**
      * Constructs a new Pawn object with the given Position and Image.
@@ -83,5 +84,13 @@ public abstract class Pawn {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public String getPalace() {
+        return palace;
+    }
+
+    public void setPalace(String palace) {
+        this.palace = palace;
     }
 }

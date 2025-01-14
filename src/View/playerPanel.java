@@ -16,13 +16,13 @@ public class playerPanel extends JLayeredPane {
     public JLabel playerStats;
     public JPanel cardsPanel;
     JPanel score;
-    public int playerScore =0;
+    private int playerScore =0;
     public JLabel statues;
     public int amountStats;
     JButton wallPaintings;
     public JPanel lastPlayedCardsPanel;
     public JLabel timerInstance;
-    wallPaintingsWin win = new wallPaintingsWin();
+    wallPaintingsWin win;
     public JLabel diskos;
     public JLabel ring;
     public JLabel kosmima;
@@ -33,6 +33,7 @@ public class playerPanel extends JLayeredPane {
     JLabel zakrosC = new JLabel();
 
     public playerPanel(Player player) {
+        win = new wallPaintingsWin(player);
         this.plr = player;
         this.statues = new JLabel();
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -181,13 +182,6 @@ public class playerPanel extends JLayeredPane {
         return statues;
     }
 
-    public void setStatues() {
-        this.statues.setText("Αγαλματάκια: " + plr.getAmountOfStatues());
-        this.statues.revalidate();
-        this.statues.repaint();
-        this.score.revalidate();
-        this.score.repaint();
-    }
 
     public JButton getWallPaintings() {
         return wallPaintings;
@@ -284,4 +278,5 @@ public class playerPanel extends JLayeredPane {
     public void setKnossosC(JLabel knossosC) {
         this.knossosC = knossosC;
     }
+
 }

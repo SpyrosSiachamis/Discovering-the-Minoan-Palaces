@@ -1,20 +1,18 @@
 package src.model.positions;
-
-import src.model.pawns.Pawn;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * Class representing the Path object defined for a palace.
- * Each Path object consists of a list of Positions and an associated Path name.
- *<p>
- * Invariants:
+ * Class representing a path object for a palace. Each path consists of a list of positions and a corresponding name.
+ * Each position within the path has associated points and an image. The path includes squares for positions, and may
+ * contain special positions such as a palace square.
  * <p>
- * - Positions in a Path are never null.
- * <p>
- * - Path name is never null or blank.
+ * <b>Invariants:</b>
+ * <ul>
+ *   <li>Positions within the path are never null.</li>
+ *   <li>The path name is never null or blank.</li>
+ * </ul>
  */
 public class Path{
     private ArrayList<Position> path = new ArrayList<Position>();
@@ -85,24 +83,45 @@ public class Path{
     }
 
     /**
-     * Adds a Pawn object to the current Path.
+     * Checks if a pawn of player1 is present on this path.
+     * <p>
+     * Postcondition: Returns {@code true} if a pawn of player1 is on the path, otherwise returns {@code false}.
      *
-     * @param pawn The Pawn object to be added to the Path.
+     * @return A boolean indicating whether a pawn of  player1 is present on the path.
      */
-    public void addPawn(Pawn pawn){}
-
     public boolean HasPawn1() {
         return hasPawn1;
     }
 
+    /**
+     * Sets the Pawn of player1 on this path.
+     * <p>
+     * Postcondition: The existance of a pawn of player1 is updated based on the provided boolean value.
+     *
+     * @param hasPawn1 A boolean indicating whether a pawn of player1 is present on the path.
+     */
     public void setHasPawn1(boolean hasPawn1) {
         this.hasPawn1 = hasPawn1;
     }
 
+    /**
+     * Checks if a pawn of player2 is present on this path.
+     * <p>
+     * Postcondition: Returns {@code true} if a pawn of player2 is on the path, otherwise returns {@code false}.
+     *
+     * @return A boolean indicating whether a pawn of  player2 is present on the path.
+     */
     public boolean HasPawn2() {
         return hasPawn2;
     }
 
+    /**
+     * Sets the Pawn of player2 on this path.
+     * <p>
+     * Postcondition: The existance of a pawn of player2 is updated based on the provided boolean value.
+     *
+     * @param hasPawn2 A boolean indicating whether a pawn of player2 is present on the path.
+     */
     public void setHasPawn2(boolean hasPawn2) {
         this.hasPawn2 = hasPawn2;
     }

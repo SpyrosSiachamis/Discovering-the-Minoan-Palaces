@@ -48,15 +48,6 @@ public class Finding {
     }
 
     /**
-     * Sets the image of the Archaeological Finding.
-     *
-     * @param findingImage The ImageIcon representing the image of the Archaeological Finding.
-     */
-    public void setFindingImage(ImageIcon findingImage) {
-        this.findingImage = findingImage;
-    }
-
-    /**
      * Retrieves the name of the Archaeological Finding.
      *
      * @return The name of the Archaeological Finding.
@@ -65,12 +56,4 @@ public class Finding {
         return findingName;
     }
 
-    /**
-     * Sets the name of the Archaeological Finding.
-     *
-     * @param findingName The name of the Archaeological Finding to be set.
-     */
-    public void setFindingName(String findingName) {
-        this.findingName = findingName;
-    }
 }

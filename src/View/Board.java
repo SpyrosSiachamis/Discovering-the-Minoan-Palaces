@@ -8,6 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * The {@code Board} class represents the visual interface of the game.
+ * It is responsible for setting up the main game window, creating UI components such as buttons,
+ * labels, panels, and menus, and handling the layout of elements related to the game board.
+ * This class is also in charge of displaying game information such as the current card stack,
+ * player points, statues, and turn information.
+ * <p>
+ * <b>Pre-condition</b>: This class is initialized when the game window is created, and it must be
+ * instantiated before the game starts or when the "New Game" button is pressed.
+ * <p>
+ * <b>Post-condition</b>: The game window, menu, and all UI components will be displayed and ready for use.
+ * <p>
+ * <b>Invariant</b>: The game window will always display the correct game information, and the UI components
+ * will reflect the current state of the game.
+ */
 public class Board extends JFrame {
     /**
      * <b>Constructor </b>: Creates a new game window and initializes buttons, panels and the music of the game
@@ -15,9 +30,7 @@ public class Board extends JFrame {
      * @throws IOException
      * @throws LineUnavailableException
      */
-    JPanel framePanel;
     JLabel timer;
-    JPanel menuPanel;
     public JMenuBar menuBar;
     public JMenuItem newGame;
     public JMenuItem Save;
@@ -27,22 +40,27 @@ public class Board extends JFrame {
     public JLayeredPane Dashboard;
     public JButton cardStackBut;
     public JLabel stackInfo;
-    public JPanel knossosPath;
-    public JPanel maliaPath;
-    public JPanel phaistosPath;
-    public JPanel zakrosPath;
     public JLayeredPane layeredPathPane = new JLayeredPane();
     public JPanel paths = new JPanel(new GridBagLayout());
     JPanel player1Pawns = new JPanel(null);
     JPanel player2Pawns = new JPanel(null);
     public GridBagConstraints gbc = new GridBagConstraints();
+
+    /**
+     * <b>Constructor</b>: Creates a new game window and initializes buttons, panels, and the music of the game.
+     * <p>
+     * <b>Post-condition</b>: The window gets created before a new game starts or when the new game button is pressed.
+     *
+     * @throws IOException if an error occurs while loading assets such as images or sounds.
+     * @throws LineUnavailableException if the audio line cannot be opened for sound playback.
+     */
     public Board() {
         ImageIcon gameIcon = new ImageIcon("src/assets/images/gameIcon.jpg");
         setIconImage(gameIcon.getImage());
 
         setTitle("Αναζητώντας τα χαμένα Μινωικά Ανάκτορα");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1265,885);
+        setSize(1280,900);
         setLocationRelativeTo(null);
 
         JMenuBar menuBar = new JMenuBar();
@@ -57,7 +75,6 @@ public class Board extends JFrame {
         });
         JMenuItem save = new JMenuItem("Save Game");
         JMenuItem cont = new JMenuItem("Continue Saved Game");
-
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(new ActionListener() {
             @Override
@@ -84,12 +101,11 @@ public class Board extends JFrame {
 
         cardStackBut.setBounds(50, 338, 90, 118);
         Dashboard.add(cardStackBut, JLayeredPane.PALETTE_LAYER);
-
-        stackInfo = new JLabel("<html> Available Cards: default<br> Check Points: default<br> Turn: default</html>", SwingConstants.LEFT);
+        stackInfo = new JLabel("<html> Available Cards: default<br> Check Points: default Points: 0<br>Statues: 0<br> Turn: default</html>", SwingConstants.LEFT);
         stackInfo.setLayout(null);
         stackInfo.setOpaque(true);
         stackInfo.setFont(new Font("Serif", Font.BOLD, 13));
-        stackInfo.setBounds(15,465, 150,60);
+        stackInfo.setBounds(15,458, 170,80);
         stackInfo.setBackground(Color.WHITE);
         stackInfo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         Dashboard.add(stackInfo, JLayeredPane.PALETTE_LAYER);
@@ -143,19 +159,21 @@ public class Board extends JFrame {
         setResizable(false);
     }
 
+    /**
+     * Returns the panel containing the pawns for player 2.
+     *
+     * @return JPanel for player 2 pawns.
+     */
     public JPanel getPlayer2Pawns() {
         return player2Pawns;
     }
 
-    public void setPlayer2Pawns(JPanel player2Pawns) {
-        this.player2Pawns = player2Pawns;
-    }
-
+    /**
+     * Returns the panel containing the pawns for player 1.
+     *
+     * @return JPanel for player 1 pawns.
+     */
     public JPanel getPlayer1Pawns() {
         return player1Pawns;
-    }
-
-    public void setPlayer1Pawns(JPanel player1Pawns) {
-        this.player1Pawns = player1Pawns;
     }
 }

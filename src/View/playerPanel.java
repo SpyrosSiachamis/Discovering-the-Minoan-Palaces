@@ -1,41 +1,50 @@
 package src.View;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.AbstractDateTimeDV;
 import src.model.Player;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-
+/**
+ * The {@code playerPanel} class represents the visual panel displaying the player's stats, cards, last played cards,
+ * and other relevant information during the game. It provides an interactive user interface to display player-specific
+ * information like their score, available pawns, and a timer.
+ * <p>
+ * <b>Pre-condition</b>: A valid {@link Player} object must be passed to the constructor to initialize the panel.
+ * <p>
+ * <b>Post-condition</b>: The player panel is initialized with various components, including labels, buttons, and images,
+ * to represent the player's current game status and interaction options.
+ * <p>
+ * <b>Invariant</b>: The panel displays dynamically updated player information such as available pawns, cards, and time.
+ */
 public class playerPanel extends JLayeredPane {
     Player plr;
     JPanel panel;
     public JLabel playerStats;
     public JPanel cardsPanel;
     JPanel score;
-    private int playerScore =0;
-    public JLabel statues;
-    public int amountStats;
-    JButton wallPaintings;
     public JPanel lastPlayedCardsPanel;
     public JLabel timerInstance;
-    wallPaintingsWin win;
+    WallPaintingsWin win;
     public JLabel diskos;
     public JLabel ring;
     public JLabel kosmima;
     public JLabel ruto;
-    JLabel knossosC = new JLabel();
-    JLabel maliaC = new JLabel();
-    JLabel phaistosC = new JLabel();
-    JLabel zakrosC = new JLabel();
+    JLabel knossosC;
+    JLabel maliaC;
+    JLabel phaistosC;
+    JLabel zakrosC;
 
+    /**
+     * Constructs a new player panel for a given player. Initializes the panel layout,
+     * sets up player statistics, cards, and interactive components like buttons.
+     *
+     * @param player The player whose information will be displayed on the panel.
+     */
     public playerPanel(Player player) {
-        win = new wallPaintingsWin(player);
+        win = new WallPaintingsWin(player.getFinds(),player);
         this.plr = player;
-        this.statues = new JLabel();
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         setLayout(null);
         setSize(1280,150);
@@ -106,9 +115,6 @@ public class playerPanel extends JLayeredPane {
         lastPlayedCardsPanel.add(ruto, JLayeredPane.PALETTE_LAYER);
 
         score = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel playerScoreT = new JLabel("Το Σκορ Μου: " + playerScore + " Πόντοι");
-        playerScoreT.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        score.add(playerScoreT);
 
         JButton wallPaintings = new JButton("Οι Τοιχογραφίες μου");
         wallPaintings.addActionListener(new ActionListener() {
@@ -120,9 +126,6 @@ public class playerPanel extends JLayeredPane {
             }
         });
         score.add(wallPaintings);
-        JLabel statues = new JLabel("Αγαλματάκια: " + amountStats);
-        statues.setBorder(BorderFactory.createEmptyBorder(0,0,0,10));
-        score.add(statues);
         ImageIcon originalImage = new ImageIcon("src/assets/images/findings/snakes.jpg");
         Image scaledStatue = originalImage.getImage().getScaledInstance(35,35,Image.SCALE_SMOOTH);
         JLabel statueImage = new JLabel(new ImageIcon(scaledStatue));
@@ -138,145 +141,50 @@ public class playerPanel extends JLayeredPane {
         add(score, JLayeredPane.PALETTE_LAYER);
     }
 
-    public JPanel getPanel() {
-        return panel;
-    }
-
-    public void setPanel(JPanel panel) {
-        this.panel = panel;
-    }
-
-    public JLabel getPlayerStats() {
-        return playerStats;
-    }
-
-    public void setPlayerStats(JLabel playerStats) {
-        this.playerStats = playerStats;
-    }
-
-    public JPanel getCardsPanel() {
-        return cardsPanel;
-    }
-
-    public void setCardsPanel(JPanel cardsPanel) {
-        this.cardsPanel = cardsPanel;
-    }
-
-    public JPanel getScore() {
-        return score;
-    }
-
-    public void setScore(JPanel score) {
-        this.score = score;
-    }
-
-    public int getPlayerScore() {
-        return playerScore;
-    }
-
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
-    }
-
-    public JLabel getStatues() {
-        return statues;
-    }
-
-
-    public JButton getWallPaintings() {
-        return wallPaintings;
-    }
-
-    public void setWallPaintings(JButton wallPaintings) {
-        this.wallPaintings = wallPaintings;
-    }
-
-    public JPanel getLastPlayedCardsPanel() {
-        return lastPlayedCardsPanel;
-    }
-
-    public void setLastPlayedCardsPanel(JPanel lastPlayedCardsPanel) {
-        this.lastPlayedCardsPanel = lastPlayedCardsPanel;
-    }
-
-    public JLabel getTimerInstance() {
-        return timerInstance;
-    }
-
-    public void setTimerInstance(JLabel timerInstance) {
-        this.timerInstance = timerInstance;
-    }
-
-    public wallPaintingsWin getWin() {
-        return win;
-    }
-
-    public void setWin(wallPaintingsWin win) {
+    /**
+     * Sets the WallPaintingsWin object associated with the player panel.
+     *
+     * @param win The WallPaintingsWin object to set.
+     */
+    public void setWin(WallPaintingsWin win) {
         this.win = win;
     }
 
-    public JLabel getDiskos() {
-        return diskos;
-    }
-
-    public void setDiskos(JLabel diskos) {
-        this.diskos = diskos;
-    }
-
-    public JLabel getRing() {
-        return ring;
-    }
-
-    public void setRing(JLabel ring) {
-        this.ring = ring;
-    }
-
-    public JLabel getKosmima() {
-        return kosmima;
-    }
-
-    public void setKosmima(JLabel kosmima) {
-        this.kosmima = kosmima;
-    }
-
-    public JLabel getRuto() {
-        return ruto;
-    }
-
-    public void setRuto(JLabel ruto) {
-        this.ruto = ruto;
-    }
-
+    /**
+     * Gets the Zakros palace label.
+     *
+     * @return The Zakros palace label.
+     */
     public JLabel getZakrosC() {
         return zakrosC;
     }
 
-    public void setZakrosC(JLabel zakrosC) {
-        this.zakrosC = zakrosC;
-    }
-
+    /**
+     * Gets the Phaistos palace label.
+     *
+     * @return The Phaistos palace label.
+     */
     public JLabel getPhaistosC() {
         return phaistosC;
     }
 
-    public void setPhaistosC(JLabel phaistosC) {
-        this.phaistosC = phaistosC;
-    }
-
+    /**
+     * Gets the Malia palace label.
+     *
+     * @return The Malia palace label.
+     */
     public JLabel getMaliaC() {
         return maliaC;
     }
 
-    public void setMaliaC(JLabel maliaC) {
-        this.maliaC = maliaC;
-    }
-
+    /**
+     * Gets the Knossos palace label.
+     *
+     * @return The Knossos palace label.
+     */
     public JLabel getKnossosC() {
         return knossosC;
     }
 
-    public void setKnossosC(JLabel knossosC) {
-        this.knossosC = knossosC;
-    }
 
 }

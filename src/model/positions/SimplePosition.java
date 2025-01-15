@@ -1,9 +1,4 @@
 package src.model.positions;
-
-import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 public class SimplePosition extends Position {
     /**
      * Constructs a new SimplePosition object with the provided x-coordinate, Path, points, and square.

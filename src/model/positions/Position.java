@@ -1,18 +1,30 @@
 package src.model.positions;
 
-import java.awt.event.MouseListener;
-
+/**
+ * The {@code Position} class represents a specific position on a path in the game.
+ * Each position has an associated x-coordinate, a path name, points, and a square.
+ * <p>
+ * The Position class is abstract and serves as a base for other position-related classes.
+ * <p>
+ * <b>Pre-condition</b>: A valid integer value for the x-coordinate, a non-null string for the path name,
+ * and a non-null {@link Square} object must be provided when constructing a position.
+ * <p>
+ * <b>Post-condition</b>: The position is initialized with the given x-coordinate, path name, and square.
+ * The points are initially set to 0.
+ * <p>
+ * <b>Invariant</b>: A Position object has a defined x-coordinate, path, square, and points.
+ */
 public abstract class Position {
     private int x;
     private String path;
     private int points;
     private Square square;
-    private boolean hasPawn = false;
     /**
      * Represents a position with an x-coordinate and a path associated with it.
      *
      * @param x The x-coordinate of the Position.
      * @param path The Path name associated with the Position.
+     * @param square The Square object associated with this Position.
      */
     public Position(int x, String path, Square square) {
         this.x = x;
@@ -20,29 +32,6 @@ public abstract class Position {
         this.points = 0;
         this.square = square;
     }
-
-    public Position() {
-
-    }
-
-    /**
-     * Returns the path associated with this Position object.
-     *
-     * @return the Path object associated with this Position.
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * Sets the Path object for a Position.
-     *
-     * @param path The Path object to be set for the Position.
-     */
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     /**
      * Retrieves the x-coordinate of the Position object.
      *
@@ -51,16 +40,6 @@ public abstract class Position {
     public int getX() {
         return x;
     }
-
-    /**
-     * Sets the x-coordinate of this Position.
-     *
-     * @param x the new x-coordinate to set
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
-
 
     /**
      * Sets the points for the current Position.
@@ -80,20 +59,14 @@ public abstract class Position {
         return points;
     }
 
+    /**
+     * Retrieves the Square associated with this Position.
+     * <p>
+     * Postcondition: Returns the Square object currently assigned to this Position.
+     *
+     * @return The Square object associated with this Position.
+     */
     public Square getSquare() {
         return square;
-    }
-
-    public void setSquare(Square square) {
-        this.square = square;
-    }
-
-
-    public boolean HasPawn() {
-        return hasPawn;
-    }
-
-    public void setHasPawn(boolean hasPawn) {
-        this.hasPawn = hasPawn;
     }
 }

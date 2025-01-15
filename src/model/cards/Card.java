@@ -1,19 +1,36 @@
 package src.model.cards;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseListener;
 
+/**
+ * Represents a card in the game.
+ * Each card is associated with an image and a palace, and it provides methods to access and modify the card's properties.
+ * <p>
+ * <b>Invariants:</b>
+ * <ul>
+ *     <li>The card image is represented by a valid {@link ImageIcon}.</li>
+ *     <li>The palace name is a valid, non-empty string.</li>
+ *     <li>The card button is initialized with a scaled image of the card.</li>
+ * </ul>
+ */
 public abstract class Card {
     private ImageIcon minImage;
     private String Palace;
     private JButton cardButton;
-    private int value;
+    private ImageIcon backCard = new ImageIcon("src/assets/images/cards/backCard.jpg");
+
     /**
      * <b>Constructor</b>: Constructs a new `Card` object.
      * <p>
      * Initializes the `Card` with a provided ImageIcon and palace name string.
      * <p>
-     * Precondition: `minImage` input should be a non-null ImageIcon. `palace` must be a valid non-empty String.
+     * <b>Pre-condition:</b>
+     * <ul>
+     *     <li>`minImage` input should be a non-null {@link ImageIcon}.</li>
+     *     <li>`palace` must be a valid, non-empty {@link String}.</li>
+     * </ul>
+     * <p>
+     * <b>Post-condition:</b> The `Card` is initialized with a scaled image and a palace name.
      *
      * @param minImage The ImageIcon representing the image of the card.
      * @param palace The name of the palace that the card is associated with.
@@ -30,7 +47,9 @@ public abstract class Card {
     }
 
     /**
-     * Retrieves the ImageIcon representing the card.
+     * Retrieves the {@link ImageIcon} representing the card.
+     * <p>
+     * <b>Post-condition:</b> A scaled version of the card's image is returned.
      *
      * @return The ImageIcon representing the image of the card.
      */
@@ -41,11 +60,13 @@ public abstract class Card {
     }
 
     /**
-     * Sets the ImageIcon representing the image of the card.
-     *
-     * @param minImage An ImageIcon representing the new image of the card.
+     * Sets the {@link ImageIcon} representing the image of the card.
      * <p>
-     * Precondition: `minImage` input should be a non-null ImageIcon.
+     * <b>Pre-condition:</b> `minImage` input should be a non-null {@link ImageIcon}.
+     * <p>
+     * <b>Post-condition:</b> The image of the card is updated with the new {@link ImageIcon}.
+     *
+     * @param minImage The new ImageIcon to set for the card's image.
      */
     public void setImage(ImageIcon minImage) {
 
@@ -55,33 +76,23 @@ public abstract class Card {
     /**
      * Retrieves the name of the palace associated with the card.
      * <p>
-     * @return A string representing the name of the associated palace.
+     * <b>Post-condition:</b> The name of the palace associated with this card is returned.
+     *
+     * @return The name of the palace associated with the card.
      */
     public String getPalaceName() {
         return Palace;
     }
 
     /**
-     * Sets the name of the palace that the card is associated with.
-     *
-     * @param palace A string representing the new associated palace name.
+     * Retrieves the {@link JButton} representing the clickable button for this card.
      * <p>
-     * Precondition: `palace` input is a valid non-empty String.
+     * <b>Post-condition:</b> The {@link JButton} associated with the card is returned.
+     *
+     * @return The JButton representing the card.
      */
-    public void setPalace(String palace) {
-        Palace = palace;
-    }
-
     public JButton getCardButton() {
         return cardButton;
     }
 
-    public void setCardButton(JButton cardButton) {
-        this.cardButton = cardButton;
-    }
-
-    @Override
-    public String toString() {
-        return "Card [Palace=" + Palace + ", Image=" + minImage + "]";
-    }
 }

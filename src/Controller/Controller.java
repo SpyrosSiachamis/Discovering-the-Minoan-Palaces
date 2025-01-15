@@ -54,14 +54,12 @@ public class Controller {
     palace zakros;
     palace phaistos;
     private Stack<Card> cardStack = new Stack<Card>();
-    private ArrayList<Finding> rareFindings = new ArrayList<>();
     private ArrayList<Finding> findings = new ArrayList<>();
     private ArrayList<Fresco> wallPaintings = new ArrayList<>();
     public playerPanel pl1;
     public playerPanel pl2;
     private File Music;
     private Clip clip;
-    private boolean isPlaying = true;
     Board board;
     Player player = null;
     int disposedCards =0;
@@ -333,6 +331,9 @@ public class Controller {
         if (cardStack.isEmpty()) {
             endGame();
         }
+        if (player1.getCheckPoints() + player2.getCheckPoints() >=4) {
+            endGame();
+        }
         if (player.getName().equals("1")) {
             pl1.timerInstance.setText("Χρόνος: 30");
             stopTimer();
@@ -572,7 +573,6 @@ public class Controller {
             board.remove(pl1);
             board.add(pl2);
         }
-        isPlaying = true;
         if (player.getName().equals("1")){
             board.stackInfo.setText("<html> Available Cards: " + cardStack.size() +"<br> Check Points: "+ player1.getCheckPoints() +"<br> Turn: "+player.getName()+"</html>");
         }
@@ -976,7 +976,6 @@ public class Controller {
      * @param player the player who is throwing the card
      * @param panel the panel where the card's button will be removed
      */
-    boolean hasPawn = false;
     int amountOfArchs1 = 0;
     int amountOfArchs2 = 0;
     boolean theseusAdded1 = false;
@@ -1631,10 +1630,6 @@ public class Controller {
     }
 
     /**
-     * Code is inspired from the MVC_CardGame we were provided as an example.
-     */
-
-    /**
      * CardListener is a private inner class that implements MouseListener to handle mouse events
      * for the board application. It listens to mouse interactions specifically on button components
      * and triggers the corresponding actions when the game is running.
@@ -1963,29 +1958,6 @@ public class Controller {
                 pos.getSquare().setMouseListener(new PathListener(pos));
             }
         }
-    }
-
-    /**
-     * Checks if the given position contains a finding and returns it.
-     * <p>
-     * <b>Pre-condition</b>: The position provided must not be null. It is expected to be
-     * an instance of FindingPosition for any findings to be retrieved.
-     * <p>
-     * <b>Post-condition</b>: Returns the Finding associated with the position, or null
-     * if the position does not contain a finding or is not an instance of FindingPosition.
-     * <p>
-     * <b>Invariant</b>: The position's state remains unchanged by this method.
-     *
-     * @param p the position to check for a finding. It should ideally be an instance of FindingPosition.
-     * @return the finding associated with the position if it exists; null otherwise.
-     */
-    public boolean hasFinding(Position p) {
-        if (p instanceof FindingPosition) {
-            if (((FindingPosition) p).getFind() != null) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

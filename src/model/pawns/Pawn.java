@@ -20,7 +20,6 @@ import java.awt.*;
 public abstract class Pawn {
     private Position position;
     ImageIcon image;
-    int xPos;
     JLabel pawn = new JLabel();
     Image scaledImage;
     ImageIcon question = new ImageIcon("src/assets/images/pionia/question.jpg");
@@ -41,18 +40,6 @@ public abstract class Pawn {
     public Pawn() {
     }
 
-
-
-    /**
-     * Retrieves the current {@link Position} object associated with this Pawn.
-     * <p>
-     * Postcondition: Returns the {@link Position} representing the current position of the Pawn.
-     *
-     * @return the {@link Position} object representing the current position of the Pawn.
-     */
-    public Position getPosition() {
-        return position;
-    }
 
     /**
      * Sets the {@link Position} object for the current Pawn.

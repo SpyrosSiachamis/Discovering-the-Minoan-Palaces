@@ -39,9 +39,4 @@ public class FindingPosition extends SimplePosition{
     public void setFind(Finding find) {
         this.find = find;
     }
-
-    @Override
-    public String toString() {
-        return find.getFindingName();
-    }
 }

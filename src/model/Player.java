@@ -89,14 +89,6 @@ public class Player {
     }
 
     /**
-     * Sets the Archaeological Finds of Player.
-     * @param finds Archaeological Findings.
-     */
-    public void setFinds(ArrayList<Finding> finds) {
-        this.finds = finds;
-    }
-
-    /**
      * Retrieves the list of cards associated with the player.
      *
      * @return An ArrayList of Card objects representing the player's cards.
@@ -151,14 +143,6 @@ public class Player {
     }
 
     /**
-     * Sets the pawns of the Player.
-     * @param pawns Pawns of Player.
-     */
-    public void setPawns(ArrayList<Pawn> pawns) {
-        this.pawns = pawns;
-    }
-
-    /**
      * Retrieves the music file associated with the player.
      *
      * @return The music file of the player.
@@ -167,31 +151,6 @@ public class Player {
         return music;
     }
 
-    /**
-     * Sets the music file associated with the player.
-     *
-     * @param music A File object representing the music file to be set for the player.
-     */
-    public void setMusic(File music) {
-        this.music = music;
-    }
-
-    /**
-     * Returns the Victory status of the player.
-     * @return Victory Status
-     */
-    public boolean getVictoryStatus(){
-        return hasWon;
-    }
-
-    /**
-     * Sets the victory status of the player.
-     *
-     * @param hasWon A boolean representing the victory status to be set.
-     */
-    public void setHasWon(boolean hasWon) {
-        this.hasWon = hasWon;
-    }
 
     /**
      * Gets the name of the player.
@@ -211,29 +170,49 @@ public class Player {
         Name = name;
     }
 
+    /**
+     * Retrieves the current number of check points accumulated by the player.
+     *
+     * @return The current check points of the player.
+     */
     public int getCheckPoints() {
         return checkPoints;
     }
 
+    /**
+     * Sets the number of check points for the player.
+     *
+     * @param checkPoints The number of check points to set for the player.
+     */
     public void setCheckPoints(int checkPoints) {
         this.checkPoints = checkPoints;
     }
+
+    /**
+     * Retrieves the array of the last played cards by the player.
+     * <p>
+     * This array contains up to four cards representing the most recent cards played by the player.
+     *
+     * @return An array of Card objects representing the last played cards.
+     */
     public Card[] getLastPlayedCards() {
         return lastPlayedCards;
     }
 
-    public void setLastPlayedCards(Card[] lastPlayedCards) {
-        this.lastPlayedCards = lastPlayedCards;
-    }
-
-    public boolean isHasWon() {
-        return hasWon;
-    }
-
+    /**
+     * Retrieves the number of statues collected by the player.
+     *
+     * @return The number of statues collected by the player.
+     */
     public int getAmountOfStatues() {
         return amountOfStatues;
     }
 
+    /**
+     * Sets the number of statues collected by the player.
+     *
+     * @param amountOfStatues The number of statues to set for the player.
+     */
     public void setAmountOfStatues(int amountOfStatues) {
         this.amountOfStatues = amountOfStatues;
     }

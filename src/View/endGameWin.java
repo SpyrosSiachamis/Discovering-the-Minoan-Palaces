@@ -154,9 +154,28 @@ public class endGameWin extends JFrame {
             panel.add(exit);
             add(panel);
         }
-
-
     }
+
+    /**
+     * Calculates the total points for a given player based on their current points,
+     * the number of statues collected, and other game-specific criteria.
+     * <p>
+     * The player's points are modified based on the following rules:
+     * <ul>
+     *   <li>1 statue: -20 points</li>
+     *   <li>2 statues: -15 points</li>
+     *   <li>3 statues: +10 points</li>
+     *   <li>4 statues: +15 points</li>
+     *   <li>5 statues: +30 points</li>
+     *   <li>6 or more statues: +50 points</li>
+     * </ul>
+     * The total calculated points are then set back to the player's points.
+     *
+     * @param plr The Player object whose points are to be calculated.
+     *            Precondition: `plr` must not be null and must have valid statues and points initialized.
+     * @return The updated total points of the player after calculations.
+     * @throws NullPointerException if the provided Player object is null.
+     */
     public int calcPlayerPoints(Player plr) {
         int points = 0;
         int snakes=0;

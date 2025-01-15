@@ -24,6 +24,18 @@ public class Fresco extends Finding{
         super(points, findingImage, findingName);
     }
 
+    /**
+     * Retrieves a scaled version of the finding image as a JLabel.
+     * <p>
+     * This method scales the image of the finding by one-third of its original dimensions and returns a JLabel
+     * containing the scaled image for display.
+     * <p>
+     * <b>Pre-condition</b>: The image returned by {@link #getFindingImage()} must not be null.
+     * <p>
+     * <b>Post-condition</b>: A JLabel containing the scaled image is returned, which can be used in the UI.
+     *
+     * @return A JLabel containing the scaled image of the finding.
+     */
     public JLabel getFrescoImage() {
         JLabel frescoImage = new JLabel();
         int x;

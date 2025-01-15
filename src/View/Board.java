@@ -67,12 +67,6 @@ public class Board extends JFrame {
         setJMenuBar(menuBar);
 
         JMenuItem newGame = new JMenuItem("New Game");
-        newGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
         JMenuItem save = new JMenuItem("Save Game");
         JMenuItem cont = new JMenuItem("Continue Saved Game");
         JMenuItem exit = new JMenuItem("Exit");

@@ -33,8 +33,8 @@ public class Finding {
     }
 
     /**
-     * Sets the total points of the card.
-     * @param points Total Value of points of the card
+     * Sets the total points of the finding.
+     * @param points Total Value of points of the finding
      */
     public void setPoints(int points) {
         this.points = points;

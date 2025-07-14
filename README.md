@@ -1,3 +1,5 @@
+(Has a couple bugs planned to be fixed in the future)
+
 # Project252_2024
 ## ΠΕΡΙΕΧΟΜΕΝΑ
 1. [Περιγραφή](#πέριγραφή)
